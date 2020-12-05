@@ -1,0 +1,37 @@
+/*
+ * ${table.serviceImplName}.java
+ * Copyright(C) 北京群智合信息科技股份有限公司
+ * All rights reserved.
+ * -----------------------------------------------
+ * ${date} Created by ${author}
+ */
+package ${package.ServiceImpl};
+
+import ${package.Entity}.${entity};
+import ${package.Service}.${table.serviceName};
+import ${superServiceImplClassPackage};
+import ${package.Mapper}.${table.mapperName};
+
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+
+#if($!{table.comment})
+/**
+ * $!{table.comment} 业务实现类
+ *
+ * @author ${author}
+ * @date ${date}
+ */
+#else
+/**
+ * $!{entity} 业务实现类
+ *
+ * @author ${author}
+ * @date ${date}
+ */
+#end
+@Slf4j
+@Service
+public class ${table.serviceImplName} extends ServiceImpl<${table.mapperName}, ${entity}> implements ${table.serviceName} {
+
+}
