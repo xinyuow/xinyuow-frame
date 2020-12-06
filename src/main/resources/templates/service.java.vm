@@ -1,0 +1,30 @@
+/*
+ * ${table.serviceName}.java
+ * Copyright(C) 北京群智合信息科技股份有限公司
+ * All rights reserved.
+ * -----------------------------------------------
+ * ${date} Created by ${author}
+ */
+package ${package.Service};
+
+import ${package.Entity}.${entity};
+import ${superServiceClassPackage};
+
+#if($!{table.comment})
+/**
+ * $!{table.comment} 业务接口类
+ *
+ * @author ${author}
+ * @date ${date}
+ */
+#else
+/**
+ * $!{entity} 业务接口类
+ *
+ * @author ${author}
+ * @date ${date}
+ */
+#end
+public interface ${table.serviceName} extends ${superServiceClass}<${entity}> {
+
+}

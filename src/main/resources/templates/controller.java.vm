@@ -1,0 +1,113 @@
+/*
+ * ${table.controllerName}.java
+ * Copyright(C) 北京群智合信息科技股份有限公司
+ * All rights reserved.
+ * -----------------------------------------------
+ * ${date} Created by ${author}
+ */
+package ${package.Controller};
+
+    #if(${superControllerClassPackage})
+    #end
+import ${package.Entity}.${entity};
+import ${package.Service}.${table.serviceName};
+#if(${swagger2})
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
+
+#end
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.*;
+    #if(${restControllerStyle})
+import org.springframework.web.bind.annotation.RestController;
+#else
+import org.springframework.stereotype.Controller;
+#end
+
+import javax.annotation.Resource;
+
+#if($!{table.comment})
+/**
+ * $!{table.comment} 前端控制器
+ *
+ * @author ${author}
+ * @date ${date}
+ */
+#else
+/**
+ * $!{entity} 前端控制器
+ *
+ * @author ${author}
+ * @date ${date}
+ */
+#end
+@Slf4j
+#if(${restControllerStyle})
+@RestController
+#else
+@Controller
+#end
+@RequestMapping("/api/v1/${table.entityPath}")
+#if($!{table.comment})
+@Api(tags = {"$!{table.comment}操作接口"})
+#else
+@Api(tags = {"$!{entity}操作接口"})
+#end
+#if(${superControllerClass})
+public class ${table.controllerName} extends ${superControllerClass} {
+#else
+public class ${table.controllerName} {
+#end
+
+    @Resource
+    private ${table.serviceName} ${table.entityPath}Service;
+
+	/**
+	 * 获取$!{table.comment}集合
+	 *
+	 * @return 操作结果
+	 */
+    @GetMapping("/getList")
+	@ApiOperation(value = "获取${entity}集合", notes = "查询$!{table.comment}全部数据")
+    public Map<String, Object> get${entity}List() {
+        // 查询$!{table.comment}全部数据
+        return getResult(${table.entityPath}Service.list());
+    }
+
+	/**
+	 * 获取$!{table.comment}分页列表
+	 *
+	 * @return 操作结果
+     */
+    @ApiImplicitParams(value = {
+            @ApiImplicitParam(name = "pageNumber", value = "当前页数", paramType = "query", dataType = "Integer"),
+            @ApiImplicitParam(name = "pageSize", value = "每页记录数", paramType = "query", dataType = "Integer")}
+    )
+    @PostMapping("/getPageList")
+	@ApiOperation(value = "获取${entity}分页列表", notes = "$!{table.comment}分页列表")
+    public Map<String, Object> get${entity}PageList() {
+        // 设置查询条件
+        QueryWrapper<${entity}> queryWrapper = new QueryWrapper<>();
+        IPage<${entity}> queryPage = ${table.entityPath}Service.page(getPage(), queryWrapper);
+        return getResult(queryPage);
+    }
+
+	/**
+	 * 通过主键ID获取$!{table.comment}信息
+	 *
+	 * @param id 主键ID
+	 * @return 操作结果
+	 */
+	@ApiOperation(value = "获取${entity}信息", notes = "通过主键ID获取$!{table.comment}信息")
+	@ApiImplicitParams({
+        @ApiImplicitParam(name = "id", value = "主键ID", dataType = "Long", paramType = "path")
+	})
+	@GetMapping("/get/{id}")
+	public Map<String, Object> getById(@PathVariable("id") Long id) {
+        return getResult(${table.entityPath}Service.getById(id));
+	}
+
+}

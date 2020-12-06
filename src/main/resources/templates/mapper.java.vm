@@ -1,0 +1,30 @@
+/*
+ * ${table.mapperName}.java
+ * Copyright(C) 北京群智合信息科技股份有限公司
+ * All rights reserved.
+ * -----------------------------------------------
+ * ${date} Created by ${author}
+ */
+package ${package.Mapper};
+
+import ${superMapperClassPackage};
+import ${package.Entity}.${entity};
+
+#if($!{table.comment})
+/**
+ * $!{table.comment} Mapper接口
+ *
+ * @author ${author}
+ * @date ${date}
+ */
+#else
+/**
+ * $!{entity} Mapper接口
+ *
+ * @author ${author}
+ * @date ${date}
+ */
+#end
+public interface ${table.mapperName} extends ${superMapperClass}<${entity}> {
+
+}
