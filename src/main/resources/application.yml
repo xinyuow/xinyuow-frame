@@ -106,10 +106,3 @@ mybatis-plus:
     call-setters-on-nulls: true
     # 是否在日志中输出SQL语句，在开发或测试的时候可以使用
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-
-
-## 项目参数配置信息
-interface:
-  permission-control:
-    request-header:
-      auth-param-key: token
