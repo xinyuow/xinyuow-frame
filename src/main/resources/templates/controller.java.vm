@@ -10,20 +10,19 @@ package ${package.Controller};
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 #if(${superControllerClassPackage})
+import ${superControllerClassPackage};
 #end
 import ${package.Entity}.${entity};
 import ${package.Service}.${table.serviceName};
 #if(${swagger2})
-
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-
 #end
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-    #if(${restControllerStyle})
+#if(${restControllerStyle})
 import org.springframework.web.bind.annotation.RestController;
 #else
 import org.springframework.stereotype.Controller;

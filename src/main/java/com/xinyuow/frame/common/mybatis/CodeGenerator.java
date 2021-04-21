@@ -21,14 +21,14 @@ import java.util.List;
 public class CodeGenerator {
 
     // 生成文件存储路径，当前配置工程路径。直接生成到工程下
-    private final static String PROJECT_PATH = "/Users/xinyumao/IdeaProjects/xinyuow-frame";
+    private final static String PROJECT_PATH = "/Users/xinyuow/IdeaProjects/xinyuow-frame";
     // 开发人员
     private final static String AUTHOR = "mxy";
     // 生成文件的输出目录
     private final static String OUTPUT_DIR = PROJECT_PATH + "/src/main/java";
 
     // 数据源信息
-    private final static String DB_URL = "jdbc:mysql://localhost:3306/springboot_frame?characterEncoding=UTF-8&autoReconnect=true&failOverReadOnly=false&maxReconnects=10&allowMultiQueries=true&serverTimezone=Asia/Shanghai";
+    private final static String DB_URL = "jdbc:mysql://localhost:3306/xinyuow_frame?characterEncoding=UTF-8&autoReconnect=true&failOverReadOnly=false&maxReconnects=10&allowMultiQueries=true&serverTimezone=Asia/Shanghai";
     private final static String DB_DRIVER_NAME = "com.mysql.cj.jdbc.Driver";
     private final static String DB_USERNAME = "root";
     private final static String DB_PASSWORD = "123456";
@@ -36,7 +36,7 @@ public class CodeGenerator {
     // 表前缀
     private final static String TABLE_PREFIX = "s_";
     // 自定义controller父类
-    private final static String SUPER_CONTROLLER_CLASS = "BaseController";
+    private final static String SUPER_CONTROLLER_CLASS = "com.xinyuow.frame.common.controller.BaseController";
 
     // 模板路径
     private final static String ENTITY_TEMPLATE_PATH_WITHOUT_SUFFIX = "/templates/entity.java";
@@ -47,15 +47,15 @@ public class CodeGenerator {
     // 自定义 *Controller.java 的类路径
     private final static String CONTROLLER_PATH = "controller";
     // 自定义 *Service.java 的类路径
-    private final static String SERVICE_PATH = "service.core";
+    private final static String SERVICE_PATH = "service.app";
     // 自定义 *ServiceImpl.java 的类路径
-    private final static String SERVICE_IMPL_PATH = "service.core.impl";
+    private final static String SERVICE_IMPL_PATH = "service.app.impl";
     // 自定义 *Mapper.java 的类路径
-    private final static String MAPPER_PATH = "mapper.core";
+    private final static String MAPPER_PATH = "mapper.app";
     // 自定义 *Mapper.xml 的类路径
-    private final static String MAPPER_XML_PATH = "/src/main/resources/mapper/core/";
+    private final static String MAPPER_XML_PATH = "/src/main/resources/mapper/app/";
     // 自定义 model.java 的类路径
-    private final static String ENTITY_PATH = "model.core";
+    private final static String ENTITY_PATH = "model.app";
 
 
     /**
@@ -64,7 +64,7 @@ public class CodeGenerator {
      */
     public static void main(String[] args) {
         // 待生成的表名
-        String tableName = "s_user";
+        String tableName = "";
 
         // 调用基础代码生成方法
         generateCode(tableName);
