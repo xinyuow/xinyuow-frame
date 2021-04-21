@@ -28,21 +28,35 @@ public class CodeGenerator {
     private final static String OUTPUT_DIR = PROJECT_PATH + "/src/main/java";
 
     // 数据源信息
-    private final static String DB_URL = "jdbc:mysql://localhost:3306/hive?characterEncoding=UTF-8&autoReconnect=true&failOverReadOnly=false&maxReconnects=10&allowMultiQueries=true&serverTimezone=Asia/Shanghai";
+    private final static String DB_URL = "jdbc:mysql://localhost:3306/xinyuow_frame?characterEncoding=UTF-8&autoReconnect=true&failOverReadOnly=false&maxReconnects=10&allowMultiQueries=true&serverTimezone=Asia/Shanghai";
     private final static String DB_DRIVER_NAME = "com.mysql.cj.jdbc.Driver";
     private final static String DB_USERNAME = "root";
     private final static String DB_PASSWORD = "123456";
 
     // 表前缀
-    private final static String TABLE_PREFIX = "";
+    private final static String TABLE_PREFIX = "s_";
     // 自定义controller父类
-    private final static String SUPER_CONTROLLER_CLASS = "BaseController";
+    private final static String SUPER_CONTROLLER_CLASS = "com.xinyuow.frame.common.controller.BaseController";
 
     // 模板路径
     private final static String ENTITY_TEMPLATE_PATH_WITHOUT_SUFFIX = "/templates/entity.java";
     private final static String MAPPER_XML_TEMPLATE_PATH = "/templates/mapper.xml.vm";
+
+    // 自定义包名路径前缀
+    private final static String PACKAGE_PARENT_PATH = "com.xinyuow.frame";
+    // 自定义 *Controller.java 的类路径
+    private final static String CONTROLLER_PATH = "controller";
+    // 自定义 *Service.java 的类路径
+    private final static String SERVICE_PATH = "service.app";
+    // 自定义 *ServiceImpl.java 的类路径
+    private final static String SERVICE_IMPL_PATH = "service.app.impl";
+    // 自定义 *Mapper.java 的类路径
+    private final static String MAPPER_PATH = "mapper.app";
     // 自定义 *Mapper.xml 的类路径
-    private final static String MAPPER_XML_PATH = "/src/main/resources/mapper/";
+    private final static String MAPPER_XML_PATH = "/src/main/resources/mapper/app/";
+    // 自定义 model.java 的类路径
+    private final static String ENTITY_PATH = "model.app";
+
 
     /**
      * 生成基础代码
@@ -95,12 +109,12 @@ public class CodeGenerator {
 
         // 包配置
         PackageConfig pc = new PackageConfig();
-        pc.setParent("com.xinyuow.frame");
-        pc.setController("controller");
-        pc.setMapper("mapper");
-        pc.setService("service");
-        pc.setServiceImpl("service.impl");
-        pc.setEntity("model");
+        pc.setParent(PACKAGE_PARENT_PATH);
+        pc.setController(CONTROLLER_PATH);
+        pc.setMapper(MAPPER_PATH);
+        pc.setService(SERVICE_PATH);
+        pc.setServiceImpl(SERVICE_IMPL_PATH);
+        pc.setEntity(ENTITY_PATH);
         mpg.setPackageInfo(pc);
 
         // 策略配置
