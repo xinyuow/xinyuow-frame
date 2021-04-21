@@ -25,7 +25,7 @@ spring:
     druid:
       db-type: mysql
       driver-class-name: com.mysql.cj.jdbc.Driver
-      url: jdbc:mysql://localhost:3306/hive?characterEncoding=UTF-8&autoReconnect=true&failOverReadOnly=false&maxReconnects=10&allowMultiQueries=true&serverTimezone=Asia/Shanghai
+      url: jdbc:mysql://localhost:3306/springboot_frame?characterEncoding=UTF-8&autoReconnect=true&failOverReadOnly=false&maxReconnects=10&allowMultiQueries=true&serverTimezone=Asia/Shanghai
       username: root
       password: 123456
       # 初始化连接数
@@ -47,6 +47,18 @@ spring:
       # 打开PSCache，并且指定每个连接上PSCache的大小
       pool-prepared-statements: true
       max-pool-prepared-statement-per-connection-size: 20
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    password: root
+    database: 0
+    timeout: 5000
+    jedis:
+      pool:
+        max-idle: 8   # 连接池中的最大空闲连接
+        min-idle: 1    # 连接池中的最小空闲连接
+        max-active: 200  # 连接池最大连接数
+        max-wait: 1000  # 连接池最大阻塞等待时间
 
 ---
 ## 生产环境
@@ -56,7 +68,7 @@ spring:
     druid:
       db-type: mysql
       driver-class-name: com.mysql.cj.jdbc.Driver
-      url: jdbc:mysql://localhost:3306/hive?characterEncoding=UTF-8&autoReconnect=true&failOverReadOnly=false&maxReconnects=10&allowMultiQueries=true&serverTimezone=Asia/Shanghai
+      url: jdbc:mysql://localhost:3306/springboot_frame?characterEncoding=UTF-8&autoReconnect=true&failOverReadOnly=false&maxReconnects=10&allowMultiQueries=true&serverTimezone=Asia/Shanghai
       username: root
       password: 123456
       # 初始化连接数
@@ -78,6 +90,20 @@ spring:
       # 打开PSCache，并且指定每个连接上PSCache的大小
       pool-prepared-statements: true
       max-pool-prepared-statement-per-connection-size: 20
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    password: root
+    database: 0
+    timeout: 5000
+    jedis:
+      pool:
+        max-idle: 8   # 连接池中的最大空闲连接
+        min-idle: 1    # 连接池中的最小空闲连接
+        max-active: 200  # 连接池最大连接数
+        max-wait: 1000  # 连接池最大阻塞等待时间
+
+
 ---
 
 ## Mybatis的配置，使用Mybatis-Plus中间件
@@ -85,7 +111,7 @@ mybatis-plus:
   # 启动时是否检查MyBatis对应的XML文件是否存在
   check-config-location: true
   type-aliases-package: com.xinyuow.frame.model.**
-  mapper-locations: classpath:/mapper/*Mapper.xml
+  mapper-locations: classpath:/mapper/**/*Mapper.xml
 #  type-handlers-package: com.xinyuow.frame.common.mybatis
   global-config:
     db-config:
@@ -106,3 +132,17 @@ mybatis-plus:
     call-setters-on-nulls: true
     # 是否在日志中输出SQL语句，在开发或测试的时候可以使用
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+## 权限配置，使用Shiro中间件
+shiro:
+  redis:
+    session:
+      # Shiro Session的redis-key
+      key-name: shiro:admin:shiro_redis_session:
+      # Shiro Session的超时时间，单位：秒
+      expire: 3600
+    realm:
+      # Shiro Realm的redis-key
+      key-name: shiro:admin:shiro_redis_realm:
+      # Shiro Realm的超时时间，单位：秒
+      expire: 3600
