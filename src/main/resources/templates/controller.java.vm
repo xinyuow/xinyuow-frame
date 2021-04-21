@@ -1,14 +1,16 @@
 /*
  * ${table.controllerName}.java
- * Copyright(C) 北京群智合信息科技股份有限公司
+ * Copyright(C) xinyuow
  * All rights reserved.
  * -----------------------------------------------
  * ${date} Created by ${author}
  */
 package ${package.Controller};
 
-    #if(${superControllerClassPackage})
-    #end
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+#if(${superControllerClassPackage})
+#end
 import ${package.Entity}.${entity};
 import ${package.Service}.${table.serviceName};
 #if(${swagger2})
@@ -28,6 +30,7 @@ import org.springframework.stereotype.Controller;
 #end
 
 import javax.annotation.Resource;
+import java.util.Map;
 
 #if($!{table.comment})
 /**

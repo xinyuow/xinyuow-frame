@@ -21,28 +21,42 @@ import java.util.List;
 public class CodeGenerator {
 
     // 生成文件存储路径，当前配置工程路径。直接生成到工程下
-    private final static String PROJECT_PATH = "/Users/xinyuow/IdeaProjects/xinyuow-frame";
+    private final static String PROJECT_PATH = "/Users/xinyumao/IdeaProjects/xinyuow-frame";
     // 开发人员
     private final static String AUTHOR = "mxy";
     // 生成文件的输出目录
     private final static String OUTPUT_DIR = PROJECT_PATH + "/src/main/java";
 
     // 数据源信息
-    private final static String DB_URL = "jdbc:mysql://localhost:3306/hive?characterEncoding=UTF-8&autoReconnect=true&failOverReadOnly=false&maxReconnects=10&allowMultiQueries=true&serverTimezone=Asia/Shanghai";
+    private final static String DB_URL = "jdbc:mysql://localhost:3306/springboot_frame?characterEncoding=UTF-8&autoReconnect=true&failOverReadOnly=false&maxReconnects=10&allowMultiQueries=true&serverTimezone=Asia/Shanghai";
     private final static String DB_DRIVER_NAME = "com.mysql.cj.jdbc.Driver";
     private final static String DB_USERNAME = "root";
     private final static String DB_PASSWORD = "123456";
 
     // 表前缀
-    private final static String TABLE_PREFIX = "";
+    private final static String TABLE_PREFIX = "s_";
     // 自定义controller父类
     private final static String SUPER_CONTROLLER_CLASS = "BaseController";
 
     // 模板路径
     private final static String ENTITY_TEMPLATE_PATH_WITHOUT_SUFFIX = "/templates/entity.java";
     private final static String MAPPER_XML_TEMPLATE_PATH = "/templates/mapper.xml.vm";
+
+    // 自定义包名路径前缀
+    private final static String PACKAGE_PARENT_PATH = "com.xinyuow.frame";
+    // 自定义 *Controller.java 的类路径
+    private final static String CONTROLLER_PATH = "controller";
+    // 自定义 *Service.java 的类路径
+    private final static String SERVICE_PATH = "service.core";
+    // 自定义 *ServiceImpl.java 的类路径
+    private final static String SERVICE_IMPL_PATH = "service.core.impl";
+    // 自定义 *Mapper.java 的类路径
+    private final static String MAPPER_PATH = "mapper.core";
     // 自定义 *Mapper.xml 的类路径
-    private final static String MAPPER_XML_PATH = "/src/main/resources/mapper/";
+    private final static String MAPPER_XML_PATH = "/src/main/resources/mapper/core/";
+    // 自定义 model.java 的类路径
+    private final static String ENTITY_PATH = "model.core";
+
 
     /**
      * 生成基础代码
@@ -50,7 +64,7 @@ public class CodeGenerator {
      */
     public static void main(String[] args) {
         // 待生成的表名
-        String tableName = "";
+        String tableName = "s_user";
 
         // 调用基础代码生成方法
         generateCode(tableName);
@@ -95,12 +109,12 @@ public class CodeGenerator {
 
         // 包配置
         PackageConfig pc = new PackageConfig();
-        pc.setParent("com.xinyuow.frame");
-        pc.setController("controller");
-        pc.setMapper("mapper");
-        pc.setService("service");
-        pc.setServiceImpl("service.impl");
-        pc.setEntity("model");
+        pc.setParent(PACKAGE_PARENT_PATH);
+        pc.setController(CONTROLLER_PATH);
+        pc.setMapper(MAPPER_PATH);
+        pc.setService(SERVICE_PATH);
+        pc.setServiceImpl(SERVICE_IMPL_PATH);
+        pc.setEntity(ENTITY_PATH);
         mpg.setPackageInfo(pc);
 
         // 策略配置
