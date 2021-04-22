@@ -38,6 +38,7 @@ import io.swagger.annotations.ApiModelProperty;
 @TableName("s_role")
 @ApiModel(value = "Role对象", description = "角色表")
 public class Role implements Serializable {
+    private static final long serialVersionUID = 1840816750098604737L;
 
     @ApiModelProperty("主键ID")
     @TableId(value = "id", type = IdType.ASSIGN_ID)
@@ -53,11 +54,11 @@ public class Role implements Serializable {
 
     @ApiModelProperty("角色状态 0:启动   1:禁用")
     @TableField("status")
-    private String status;
+    private Integer status;
 
-    @ApiModelProperty("是否系统角色-系统角色不允许删除    1:是   0:否")
-    @TableField("is_sys")
-    private Integer isSys;
+    @ApiModelProperty("角色类型 0:系统角色  1:普通角色")
+    @TableField("role_type")
+    private Integer roleType;
 
     @ApiModelProperty("创建时间")
     @TableField("create_date")

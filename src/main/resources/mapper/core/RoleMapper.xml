@@ -8,13 +8,21 @@
         <result column="role_name" property="roleName" />
         <result column="role_code" property="roleCode" />
         <result column="status" property="status" />
-        <result column="is_sys" property="isSys" />
+        <result column="role_type" property="roleType" />
         <result column="create_date" property="createDate" />
         <result column="modify_date" property="modifyDate" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, role_name, role_code, status, is_sys, create_date, modify_date
+        id, role_name, role_code, status, role_type, create_date, modify_date
     </sql>
+
+    <select id="getById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM s_role R
+        WHERE R.id = #{id}
+    </select>
+
 </mapper>

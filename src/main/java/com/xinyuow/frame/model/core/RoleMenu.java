@@ -38,6 +38,7 @@ import io.swagger.annotations.ApiModelProperty;
 @TableName("s_role_menu")
 @ApiModel(value = "RoleMenu对象", description = "角色菜单表")
 public class RoleMenu implements Serializable {
+    private static final long serialVersionUID = -4244920903976785268L;
 
     @ApiModelProperty("主键ID")
     @TableId(value = "id", type = IdType.ASSIGN_ID)

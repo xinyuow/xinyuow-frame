@@ -4,21 +4,39 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.xinyuow.frame.model.core.Menu">
-        <id column="id" property="id" />
-        <result column="parent_id" property="parentId" />
-        <result column="name" property="name" />
-        <result column="url" property="url" />
-        <result column="perms" property="perms" />
-        <result column="type" property="type" />
-        <result column="icon" property="icon" />
-        <result column="sort" property="sort" />
-        <result column="remark" property="remark" />
-        <result column="create_date" property="createDate" />
-        <result column="modify_date" property="modifyDate" />
+        <id column="id" property="id"/>
+        <result column="parent_id" property="parentId"/>
+        <result column="name" property="name"/>
+        <result column="url" property="url"/>
+        <result column="perms" property="perms"/>
+        <result column="type" property="type"/>
+        <result column="icon" property="icon"/>
+        <result column="sort" property="sort"/>
+        <result column="remark" property="remark"/>
+        <result column="create_date" property="createDate"/>
+        <result column="modify_date" property="modifyDate"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, parent_id, name, url, perms, type, icon, sort, remark, create_date, modify_date
+        id, parent_id, `name`, url, perms, `type`, icon, sort, remark, create_date, modify_date
     </sql>
+
+    <!-- 通过用户ID查询对应的菜单权限集合 -->
+    <select id="findOrdinaryMenu" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM s_menu M
+        WHERE M.id
+        IN (
+            SELECT RM.menu_id
+            FROM s_role_menu RM
+            INNER JOIN s_role R ON RM.role_id = R.id AND R.status = '${@com.xinyuow.frame.common.enums.StatusEnum@ENABLE.getValue()}'
+            INNER JOIN s_user_role UR ON R.id = UR.role_id
+            WHERE UR.user_id= #{userId}
+            GROUP BY RM.menu_id
+        )
+        ORDER BY M.sort
+    </select>
+
 </mapper>

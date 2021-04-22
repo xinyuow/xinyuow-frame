@@ -10,8 +10,11 @@ package com.xinyuow.frame.model.core;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+
 import java.time.LocalDateTime;
+
 import com.baomidou.mybatisplus.annotation.TableField;
+
 import java.io.Serializable;
 
 import lombok.Builder;
@@ -38,6 +41,7 @@ import io.swagger.annotations.ApiModelProperty;
 @TableName("s_menu")
 @ApiModel(value = "Menu对象", description = "菜单表")
 public class Menu implements Serializable {
+    private static final long serialVersionUID = 4373137987996432726L;
 
     @ApiModelProperty("主键ID")
     @TableId(value = "id", type = IdType.ASSIGN_ID)

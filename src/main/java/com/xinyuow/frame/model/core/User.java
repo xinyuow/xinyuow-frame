@@ -13,6 +13,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import java.time.LocalDateTime;
 import com.baomidou.mybatisplus.annotation.TableField;
 import java.io.Serializable;
+import java.util.List;
 
 import lombok.Builder;
 import lombok.Data;
@@ -38,6 +39,7 @@ import io.swagger.annotations.ApiModelProperty;
 @TableName("s_user")
 @ApiModel(value = "User对象", description = "用户表")
 public class User implements Serializable {
+    private static final long serialVersionUID = 7896405527543127360L;
 
     @ApiModelProperty("主键ID")
     @TableId(value = "id", type = IdType.ASSIGN_ID)
@@ -65,7 +67,7 @@ public class User implements Serializable {
 
     @ApiModelProperty("是否锁定   1:是   0:否")
     @TableField("lock_flag")
-    private Integer lockFlag;
+    private Boolean lockFlag;
 
     @ApiModelProperty("锁定时间")
     @TableField("locked_date")
@@ -81,6 +83,14 @@ public class User implements Serializable {
 
     @ApiModelProperty("是否删除   1:是   0:否")
     @TableField("del_flag")
-    private Integer delFlag;
+    private Boolean delFlag;
+
+    /* ******************** 扩展属性 开始 **************************/
+
+    @ApiModelProperty(name = "用户对应的角色信息集合 - 登录时查询使用", hidden = true)
+    @TableField(exist = false)
+    private List<Role> roles;
+
+    /* ******************** 扩展属性 结束 **************************/
 
 }

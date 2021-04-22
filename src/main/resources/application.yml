@@ -112,7 +112,7 @@ mybatis-plus:
   check-config-location: true
   type-aliases-package: com.xinyuow.frame.model.**
   mapper-locations: classpath:/mapper/**/*Mapper.xml
-#  type-handlers-package: com.xinyuow.frame.common.mybatis
+  #  type-handlers-package: com.xinyuow.frame.common.mybatis
   global-config:
     db-config:
       # 主键ID生成策略，当前为用户手动输入ID
@@ -146,3 +146,16 @@ shiro:
       key-name: shiro:admin:shiro_redis_realm:
       # Shiro Realm的超时时间，单位：秒
       expire: 3600
+
+## 接口常量配置
+xinyuow:
+  frame:
+    # 登录信息
+    login-info:
+      # 登录初始计数
+      init-count: 0
+      # 最大登录失败次数
+      max-fail-count: 5
+      # 锁定时间，单位：分钟
+      lock-time: 10
+

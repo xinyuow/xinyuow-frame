@@ -38,6 +38,7 @@ import io.swagger.annotations.ApiModelProperty;
 @TableName("s_user_role")
 @ApiModel(value = "UserRole对象", description = "用户角色表")
 public class UserRole implements Serializable {
+    private static final long serialVersionUID = -627991305331023480L;
 
     @ApiModelProperty("主键ID")
     @TableId(value = "id", type = IdType.ASSIGN_ID)
