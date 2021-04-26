@@ -102,7 +102,7 @@ public class MyShiroRealm extends AuthorizingRealm {
 
             /*
                 更新权限缓存。单点登录。需要设置isRemoveSession为true。
-                目前已设置的位置：新增/编辑用户、删除用户和保存权限控制等四处。
+                需要设置的位置：新增/编辑用户、删除用户和保存权限控制等四处。
              */
             myShiroUtil.deleteCache(loginName, false);
             return new SimpleAuthenticationInfo(user, password, getName());
