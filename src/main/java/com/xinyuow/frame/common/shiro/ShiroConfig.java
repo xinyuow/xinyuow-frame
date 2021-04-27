@@ -44,11 +44,11 @@ public class ShiroConfig {
         bean.setSecurityManager(manager);
 
         // 配置登录请求的url和无权限的url
-        bean.setLoginUrl("/api/admin/un_auth");    // 未登录
+        bean.setLoginUrl("/api/un_auth");    // 未登录
 
         // 配置拦截器有序集合
         LinkedHashMap<String, String> filterChainDefinitionMap = new LinkedHashMap<>();
-        filterChainDefinitionMap.put("/api/admin/login", "anon");                   // 登录
+        filterChainDefinitionMap.put("/api/login", "anon");                   // 登录
 //        filterChainDefinitionMap.put("/interface/*", "authc");//表示需要认证才可以访问
 //        filterChainDefinitionMap.put("/api/*", "authc");
 //        filterChainDefinitionMap.put("/hive/*", "authc");
@@ -63,7 +63,7 @@ public class ShiroConfig {
 
         filterChainDefinitionMap.put("/", "anon");                                // 放行静态页面
         filterChainDefinitionMap.put("/**", "authc,perms");                       // 所有URL必须经过认证才可访问
-        filterChainDefinitionMap.put("/api/admin/logout", "logout");              // 退出
+        filterChainDefinitionMap.put("/api/logout", "logout");              // 退出
 
         bean.setFilterChainDefinitionMap(filterChainDefinitionMap);
 

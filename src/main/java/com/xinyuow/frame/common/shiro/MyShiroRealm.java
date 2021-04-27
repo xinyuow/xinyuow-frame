@@ -137,7 +137,6 @@ public class MyShiroRealm extends AuthorizingRealm {
                 }
             }
 
-
             // 通过用户ID查询对应的菜单权限集合
             List<Menu> menuList = menuMapper.findOrdinaryMenu(loginUser.getId());
 

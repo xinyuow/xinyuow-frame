@@ -138,12 +138,12 @@ shiro:
   redis:
     session:
       # Shiro Session的redis-key
-      key-name: shiro:admin:shiro_redis_session:
+      key-name: "shiro:admin:shiro_redis_session:"
       # Shiro Session的超时时间，单位：秒
       expire: 3600
     realm:
       # Shiro Realm的redis-key
-      key-name: shiro:admin:shiro_redis_realm:
+      key-name: "shiro:admin:shiro_redis_realm:"
       # Shiro Realm的超时时间，单位：秒
       expire: 3600
 
