@@ -149,6 +149,8 @@ shiro:
   session:
     # 自定义cookie的名称
     cookie_name: "OW_JSESSIONID"
+    # 自定义请求头Token的名称
+    authorization_name: "Authorization"
 
 ## 接口常量配置
 xinyuow:

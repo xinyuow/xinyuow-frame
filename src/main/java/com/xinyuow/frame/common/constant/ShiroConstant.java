@@ -28,6 +28,9 @@ public class ShiroConstant implements InitializingBean {
     @Value("${shiro.session.cookie_name}")
     private String shiroSessionCookieName;
 
+    @Value("${shiro.session.authorization_name}")
+    private String shiroSessionAuthorizationName;
+
     /**
      * Shiro Session的redis-key
      */
@@ -53,6 +56,11 @@ public class ShiroConstant implements InitializingBean {
      */
     public static String SHIRO_SESSION_COOKIE_NAME;
 
+    /**
+     * 自定义请求头认证的名称
+     */
+    public static String SHIRO_SESSION_AUTHORIZATION_NAME;
+
     @Override
     public void afterPropertiesSet() {
         SHIRO_REDIS_SESSION_KEY_NAME = shiroRedisSessionKeyName;
@@ -60,5 +68,6 @@ public class ShiroConstant implements InitializingBean {
         SHIRO_REDIS_REALM_KEY_NAME = shiroRedisRealmKeyName;
         SHIRO_REDIS_REALM_EXPIRE = shiroRedisRealmExpire;
         SHIRO_SESSION_COOKIE_NAME = shiroSessionCookieName;
+        SHIRO_SESSION_AUTHORIZATION_NAME = shiroSessionAuthorizationName;
     }
 }
