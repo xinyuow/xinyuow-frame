@@ -44,23 +44,22 @@ public class ShiroConfig {
         bean.setSecurityManager(manager);
 
         // 配置登录请求的url和无权限的url
-        bean.setLoginUrl("/api/un_auth");    // 未登录
+        bean.setLoginUrl("/api/un_auth");                                   // 未登录
 
         // 配置拦截器有序集合
         LinkedHashMap<String, String> filterChainDefinitionMap = new LinkedHashMap<>();
-        filterChainDefinitionMap.put("/api/login", "anon");                       // 登录
+        filterChainDefinitionMap.put("/api/login", "anon");                 // 登录
 
-        filterChainDefinitionMap.put("/swagger-ui.html", "anon");                 // 放行swagger2
-        filterChainDefinitionMap.put("/doc.html", "anon");                        // 放行swagger2
-        filterChainDefinitionMap.put("/swagger-resources/**", "anon");            // 放行swagger2
-        filterChainDefinitionMap.put("/v2/**", "anon");                           // 放行swagger2
-        filterChainDefinitionMap.put("/webjars/**", "anon");                      // 放行swagger2
+        filterChainDefinitionMap.put("/swagger-ui.html", "anon");           // 放行swagger2
+        filterChainDefinitionMap.put("/doc.html", "anon");                  // 放行swagger2
+        filterChainDefinitionMap.put("/swagger-resources/**", "anon");      // 放行swagger2
+        filterChainDefinitionMap.put("/v2/**", "anon");                     // 放行swagger2
+        filterChainDefinitionMap.put("/webjars/**", "anon");                // 放行swagger2
 
-        filterChainDefinitionMap.put("/static/**", "anon");                       // 放行静态页面
+        filterChainDefinitionMap.put("/static/**", "anon");                 // 放行静态页面
 
-        filterChainDefinitionMap.put("/", "anon");                                // 放行静态页面
-        filterChainDefinitionMap.put("/**", "authc,perms");                       // 所有URL必须经过认证才可访问
-        filterChainDefinitionMap.put("/api/logout", "logout");                    // 退出
+        filterChainDefinitionMap.put("/**", "authc,perms");                 // 所有URL必须经过认证才可访问
+        filterChainDefinitionMap.put("/api/logout", "logout");              // 退出
 
         bean.setFilterChainDefinitionMap(filterChainDefinitionMap);
 
