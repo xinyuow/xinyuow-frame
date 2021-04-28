@@ -146,6 +146,9 @@ shiro:
       key-name: "shiro:admin:shiro_redis_realm:"
       # Shiro Realm的超时时间，单位：秒
       expire: 3600
+  session:
+    # 自定义cookie的名称
+    cookie_name: "OW_JSESSIONID"
 
 ## 接口常量配置
 xinyuow:

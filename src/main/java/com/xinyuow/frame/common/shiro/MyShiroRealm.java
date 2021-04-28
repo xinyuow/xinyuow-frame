@@ -3,6 +3,7 @@ package com.xinyuow.frame.common.shiro;
 import cn.hutool.crypto.digest.DigestUtil;
 import com.xinyuow.frame.common.constant.InterfaceConstant;
 import com.xinyuow.frame.common.enums.StatusEnum;
+import com.xinyuow.frame.common.exception.RESPONSE_CODE_ENUM;
 import com.xinyuow.frame.mapper.core.MenuMapper;
 import com.xinyuow.frame.mapper.core.UserMapper;
 import com.xinyuow.frame.model.core.Menu;
@@ -119,7 +120,7 @@ public class MyShiroRealm extends AuthorizingRealm {
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
         User loginUser = (User) principalCollection.getPrimaryPrincipal();
         if (loginUser == null) {
-            throw new UnknownAccountException("用户不存在");
+            throw new UnknownAccountException(RESPONSE_CODE_ENUM.LOGIN_NOT_EXISTS.getMsg());
         } else {
             // 使用SimpleAuthorizationInfo做授权
             SimpleAuthorizationInfo authInfo = new SimpleAuthorizationInfo();

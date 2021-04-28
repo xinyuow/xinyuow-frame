@@ -42,7 +42,8 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, login_name, user_name, login_pwd, status, login_fail_cnt, lock_flag, locked_date, create_date, modify_date, del_flag
+        U.id, U.login_name, U.user_name, U.login_pwd, U.status, U.login_fail_cnt, U.lock_flag,
+        U.locked_date, U.create_date, U.modify_date, U.del_flag
     </sql>
 
     <!-- 根据登录名称查询用户 -->
@@ -56,7 +57,7 @@
     <!-- 查询用户并级联查询用户角色 -->
     <select id="getUserCascadeRole" resultMap="joinUserMap" parameterType="java.lang.Long">
         SELECT
-        <include refid="table_column"/>,
+        <include refid="Base_Column_List"/>,
         UR.role_id AS role_id
         FROM s_user U
         LEFT JOIN s_user_role AS UR ON U.id = UR.user_id

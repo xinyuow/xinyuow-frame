@@ -1,7 +1,7 @@
 package com.xinyuow.frame.common.shiro;
 
 import com.xinyuow.frame.common.constant.RedisConfigConstant;
-import com.xinyuow.frame.common.constant.RedisConstant;
+import com.xinyuow.frame.common.constant.ShiroConstant;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.session.mgt.SessionManager;
@@ -48,10 +48,7 @@ public class ShiroConfig {
 
         // 配置拦截器有序集合
         LinkedHashMap<String, String> filterChainDefinitionMap = new LinkedHashMap<>();
-        filterChainDefinitionMap.put("/api/login", "anon");                   // 登录
-//        filterChainDefinitionMap.put("/interface/*", "authc");//表示需要认证才可以访问
-//        filterChainDefinitionMap.put("/api/*", "authc");
-//        filterChainDefinitionMap.put("/hive/*", "authc");
+        filterChainDefinitionMap.put("/api/login", "anon");                       // 登录
 
         filterChainDefinitionMap.put("/swagger-ui.html", "anon");                 // 放行swagger2
         filterChainDefinitionMap.put("/doc.html", "anon");                        // 放行swagger2
@@ -63,7 +60,7 @@ public class ShiroConfig {
 
         filterChainDefinitionMap.put("/", "anon");                                // 放行静态页面
         filterChainDefinitionMap.put("/**", "authc,perms");                       // 所有URL必须经过认证才可访问
-        filterChainDefinitionMap.put("/api/logout", "logout");              // 退出
+        filterChainDefinitionMap.put("/api/logout", "logout");                    // 退出
 
         bean.setFilterChainDefinitionMap(filterChainDefinitionMap);
 
@@ -111,13 +108,13 @@ public class ShiroConfig {
      * @return RedisSessionDAO
      */
     @Bean
-    @DependsOn("redisConstant")
+    @DependsOn("shiroConstant")
     public RedisSessionDAO redisSessionDAO() {
         RedisSessionDAO redisSessionDAO = new RedisSessionDAO();
         redisSessionDAO.setRedisManager(redisManager());
         redisSessionDAO.setSessionIdGenerator(sessionIdGenerator());
-        redisSessionDAO.setKeyPrefix(RedisConstant.SHIRO_REDIS_SESSION_KEY_NAME);    // sessionID前缀
-        redisSessionDAO.setExpire(RedisConstant.SHIRO_REDIS_SESSION_EXPIRE);    // sessionID存在时间
+        redisSessionDAO.setKeyPrefix(ShiroConstant.SHIRO_REDIS_SESSION_KEY_NAME);   // sessionID前缀
+        redisSessionDAO.setExpire(ShiroConstant.SHIRO_REDIS_SESSION_EXPIRE);        // sessionID存在时间
         return redisSessionDAO;
     }
 
@@ -127,14 +124,14 @@ public class ShiroConfig {
      * @return RedisCacheManager
      */
     @Bean
-    @DependsOn("redisConstant")
+    @DependsOn("shiroConstant")
     public RedisCacheManager cacheManager() {
         RedisCacheManager redisCacheManager = new RedisCacheManager();
         redisCacheManager.setRedisManager(redisManager());
         // 必须要设置主键名称，shiro-redis 插件通过这个缓存用户信息
         redisCacheManager.setPrincipalIdFieldName("id");
-        redisCacheManager.setKeyPrefix(RedisConstant.SHIRO_REDIS_REALM_KEY_NAME);    // 权限前缀
-        redisCacheManager.setExpire(RedisConstant.SHIRO_REDIS_REALM_EXPIRE);    // 权限存在时间
+        redisCacheManager.setKeyPrefix(ShiroConstant.SHIRO_REDIS_REALM_KEY_NAME);   // 权限前缀
+        redisCacheManager.setExpire(ShiroConstant.SHIRO_REDIS_REALM_EXPIRE);        // 权限存在时间
         return redisCacheManager;
     }
 
@@ -202,11 +199,12 @@ public class ShiroConfig {
      * @return SimpleCookie
      */
     @Bean
+    @DependsOn("shiroConstant")
     public SimpleCookie cookie() {
         // cookie的name,对应的默认是 JSESSIONID
         SimpleCookie simpleCookie = new SimpleCookie();
         simpleCookie.setHttpOnly(true);
-        simpleCookie.setName("SHARE_JSESSIONID");
+        simpleCookie.setName(ShiroConstant.SHIRO_SESSION_COOKIE_NAME);
         return simpleCookie;
     }
 }

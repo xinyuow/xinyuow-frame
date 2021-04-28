@@ -1,9 +1,13 @@
 package com.xinyuow.frame.common.controller;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xinyuow.frame.common.exception.GlobalExceptionAdvisor;
 import com.xinyuow.frame.common.exception.RESPONSE_CODE_ENUM;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.xinyuow.frame.model.core.User;
+import com.xinyuow.frame.service.core.UserService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -23,6 +27,9 @@ public class BaseController implements Serializable {
 
     @Resource
     protected HttpServletRequest request;
+
+    @Resource(name = "userServiceImpl")
+    private UserService userService;
 
     /**
      * 默认起始页
@@ -127,4 +134,37 @@ public class BaseController implements Serializable {
         map.put(GlobalExceptionAdvisor.RESPONSE_MSG, RESPONSE_CODE_ENUM.SERVER_ERROR.getMsg());
         return map;
     }
+
+    /**
+     * 获取当前登录的用户
+     *
+     * @return 登录用户信息
+     */
+    protected User getCurrentUser() {
+        Subject subject = SecurityUtils.getSubject();
+        if (subject != null) {
+            User user = (User) subject.getPrincipal();
+            if (user != null) {
+                return userService.getById(user.getId());
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 获取当前登录的用户ID
+     *
+     * @return 登录用户ID
+     */
+    protected Long getCurrentUserId() {
+        Subject subject = SecurityUtils.getSubject();
+        if (subject != null) {
+            User user = (User) subject.getPrincipal();
+            if (user != null) {
+                return user.getId();
+            }
+        }
+        return null;
+    }
+
 }

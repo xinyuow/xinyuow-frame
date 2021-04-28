@@ -2,6 +2,8 @@ package com.xinyuow.frame.common.exception;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.apache.shiro.authz.UnauthenticatedException;
+import org.apache.shiro.authz.UnauthorizedException;
 import org.springframework.beans.ConversionNotSupportedException;
 import org.springframework.http.converter.HttpMessageConversionException;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -134,6 +136,34 @@ public class GlobalExceptionAdvisor {
         Map<String, Object> map = new HashMap<>();
         map.put(RESPONSE_CODE, exception.getErrorCode());
         map.put(RESPONSE_MSG, exception.getErrorMsg());
+        return map;
+    }
+
+    /**
+     * 捕获Shiro无权限异常 未授权异常
+     *
+     * @param exception 无权限异常
+     * @return 返回的异常信息map
+     */
+    @ExceptionHandler(UnauthorizedException.class)
+    public Object handleUnauthorizedException(UnauthorizedException exception) {
+        // 无权限
+        Map<String, Object> map = new HashMap<>();
+        addResCodeToMap(RESPONSE_CODE_ENUM.UNAUTHORIZED, map);
+        return map;
+    }
+
+    /**
+     * 捕获Shiro无权限异常 未认证异常
+     *
+     * @param exception 无权限异常
+     * @return 返回的异常信息map
+     */
+    @ExceptionHandler(UnauthenticatedException.class)
+    public Object handleUnauthenticatedException(UnauthenticatedException exception) {
+        // 无权限
+        Map<String, Object> map = new HashMap<>();
+        addResCodeToMap(RESPONSE_CODE_ENUM.UNAUTHORIZED, map);
         return map;
     }
 

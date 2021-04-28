@@ -5,13 +5,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 /**
- * Redis缓存常量配置
+ * Shiro常量配置
  *
  * @author mxy
  * @date 2021/4/21
  */
 @Component
-public class RedisConstant implements InitializingBean {
+public class ShiroConstant implements InitializingBean {
 
     @Value("${shiro.redis.session.key-name}")
     private String shiroRedisSessionKeyName;
@@ -24,6 +24,9 @@ public class RedisConstant implements InitializingBean {
 
     @Value("${shiro.redis.realm.expire}")
     private int shiroRedisRealmExpire;
+
+    @Value("${shiro.session.cookie_name}")
+    private String shiroSessionCookieName;
 
     /**
      * Shiro Session的redis-key
@@ -45,11 +48,17 @@ public class RedisConstant implements InitializingBean {
      */
     public static int SHIRO_REDIS_REALM_EXPIRE;
 
+    /**
+     * 自定义cookie的名称，避免和跟原来的session的id值重复的
+     */
+    public static String SHIRO_SESSION_COOKIE_NAME;
+
     @Override
     public void afterPropertiesSet() {
         SHIRO_REDIS_SESSION_KEY_NAME = shiroRedisSessionKeyName;
         SHIRO_REDIS_SESSION_EXPIRE = shiroRedisSessionExpire;
         SHIRO_REDIS_REALM_KEY_NAME = shiroRedisRealmKeyName;
         SHIRO_REDIS_REALM_EXPIRE = shiroRedisRealmExpire;
+        SHIRO_SESSION_COOKIE_NAME = shiroSessionCookieName;
     }
 }
