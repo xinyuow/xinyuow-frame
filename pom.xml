@@ -162,7 +162,7 @@
             <version>${hutool-all.version}</version>
         </dependency>
 
-        <!-- Mybatis-Plus 配置 -->
+        <!-- Mybatis-Plus配置 -->
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-boot-starter</artifactId>
@@ -209,6 +209,12 @@
             <groupId>redis.clients</groupId>
             <artifactId>jedis</artifactId>
             <version>${jedis.version}</version>
+        </dependency>
+
+        <!-- Flyway -->
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
         </dependency>
 
     </dependencies>
