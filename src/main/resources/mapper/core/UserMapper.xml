@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xinyuow.frame.mapper.core.UserMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.xinyuow.frame.model.core.User">
+        <id column="id" property="id" />
+        <result column="login_name" property="loginName" />
+        <result column="user_name" property="userName" />
+        <result column="login_pwd" property="loginPwd" />
+        <result column="status" property="status" />
+        <result column="login_fail_cnt" property="loginFailCnt" />
+        <result column="lock_flag" property="lockFlag" />
+        <result column="locked_date" property="lockedDate" />
+        <result column="create_date" property="createDate" />
+        <result column="modify_date" property="modifyDate" />
+        <result column="del_flag" property="delFlag" />
+    </resultMap>
+
+    <!-- 级联查询返回的map -->
+    <resultMap id="joinUserMap" type="com.xinyuow.frame.model.core.User">
+        <id column="id" property="id" />
+        <result column="login_name" property="loginName" />
+        <result column="user_name" property="userName" />
+        <result column="login_pwd" property="loginPwd" />
+        <result column="status" property="status" />
+        <result column="login_fail_cnt" property="loginFailCnt" />
+        <result column="lock_flag" property="lockFlag" />
+        <result column="locked_date" property="lockedDate" />
+        <result column="create_date" property="createDate" />
+        <result column="modify_date" property="modifyDate" />
+        <result column="del_flag" property="delFlag" />
+
+        <!-- 级联查询用户对应角色 -->
+        <collection property="roles"
+                    ofType="com.xinyuow.frame.model.core.Role"
+                    javaType="java.util.ArrayList"
+                    select="com.xinyuow.frame.mapper.core.RoleMapper.getById"
+                    column="role_id">
+        </collection>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        U.id, U.login_name, U.user_name, U.login_pwd, U.status, U.login_fail_cnt, U.lock_flag,
+        U.locked_date, U.create_date, U.modify_date, U.del_flag
+    </sql>
+
+    <!-- 根据登录名称查询用户 -->
+    <select id="getByLoginName" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM s_user U
+        WHERE U.login_name = #{loginName}
+    </select>
+
+    <!-- 查询用户并级联查询用户角色 -->
+    <select id="getUserCascadeRole" resultMap="joinUserMap" parameterType="java.lang.Long">
+        SELECT
+        <include refid="Base_Column_List"/>,
+        UR.role_id AS role_id
+        FROM s_user U
+        LEFT JOIN s_user_role AS UR ON U.id = UR.user_id
+        LEFT JOIN s_role AS R ON UR.role_id = R.id
+        WHERE U.id = #{userId}
+    </select>
+
+</mapper>
