@@ -172,4 +172,14 @@ xinyuow:
       max-fail-count: 5
       # 锁定时间，单位：分钟
       lock-time: 10
+      # 二维码登录，二维码的宽度。单位：px
+      qr-code-width: 300
+      # 二维码登录，二维码的高度。单位：px
+      qr-code-height: 300
+      # 二维码登录，存储二维码信息的Redis信息
+      qr-code-redis:
+        # redis-key
+        key-name: "login:qr_code:"
+        # 超时时间，单位：秒
+        expire: 60
 

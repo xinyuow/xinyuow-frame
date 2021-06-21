@@ -49,6 +49,7 @@ public class ShiroConfig {
         // 配置拦截器有序集合
         LinkedHashMap<String, String> filterChainDefinitionMap = new LinkedHashMap<>();
         filterChainDefinitionMap.put("/api/login", "anon");                 // 登录
+        filterChainDefinitionMap.put("/api/qr_code/**", "anon");            // 放行二维码登录相关接口
 
         filterChainDefinitionMap.put("/swagger-ui.html", "anon");           // 放行swagger2
         filterChainDefinitionMap.put("/doc.html", "anon");                  // 放行swagger2

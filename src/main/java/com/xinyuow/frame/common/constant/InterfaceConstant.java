@@ -23,6 +23,18 @@ public class InterfaceConstant implements InitializingBean {
     @Value("${xinyuow.frame.login-info.lock-time}")
     private Integer loginInfoLockTime;
 
+    @Value("${xinyuow.frame.login-info.qr-code-width}")
+    private Integer loginInfoQrCodeWidth;
+
+    @Value("${xinyuow.frame.login-info.qr-code-height}")
+    private Integer loginInfoQrCodeHeight;
+
+    @Value("${xinyuow.frame.login-info.qr-code-redis.key-name}")
+    private String loginInfoQrCodeRedisKeyName;
+
+    @Value("${xinyuow.frame.login-info.qr-code-redis.expire}")
+    private Integer loginInfoQrCodeRedisExpire;
+
     /**
      * 登录 - 登录初始计数
      */
@@ -38,10 +50,34 @@ public class InterfaceConstant implements InitializingBean {
      */
     public static Integer LOGIN_INFO_LOCK_TIME;
 
+    /**
+     * 二维码登录 - 二维码的宽度，单位：px
+     */
+    public static Integer LOGIN_INFO_QR_CODE_WIDTH;
+
+    /**
+     * 二维码登录 - 二维码的高度，单位：px
+     */
+    public static Integer LOGIN_INFO_QR_CODE_HEIGHT;
+
+    /**
+     * 二维码登录 - 存储二维码信息的Redis的key
+     */
+    public static String LOGIN_INFO_QR_CODE_REDIS_KEY_NAME;
+
+    /**
+     * 二维码登录 - 存储二维码信息的Redis的超时时间，单位：秒
+     */
+    public static Integer LOGIN_INFO_QR_CODE_REDIS_EXPIRE;
+
     @Override
     public void afterPropertiesSet() {
         LOGIN_INFO_INIT_COUNT = loginInfoInitCount;
         LOGIN_INFO_MAX_FAIL_COUNT = loginInfoMaxFailCount;
         LOGIN_INFO_LOCK_TIME = loginInfoLockTime;
+        LOGIN_INFO_QR_CODE_WIDTH = loginInfoQrCodeWidth;
+        LOGIN_INFO_QR_CODE_HEIGHT = loginInfoQrCodeHeight;
+        LOGIN_INFO_QR_CODE_REDIS_KEY_NAME = loginInfoQrCodeRedisKeyName;
+        LOGIN_INFO_QR_CODE_REDIS_EXPIRE = loginInfoQrCodeRedisExpire;
     }
 }

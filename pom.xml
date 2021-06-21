@@ -39,6 +39,7 @@
         <apache.shiro.version>1.5.3</apache.shiro.version>
         <shiro-redis.version>3.2.3</shiro-redis.version>
         <jedis.version>2.10.2</jedis.version>
+        <zxing-core.version>3.4.1</zxing-core.version>
 
         <!-- 跳过单元测试 -->
         <skipTests>true</skipTests>
@@ -215,6 +216,13 @@
         <dependency>
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-core</artifactId>
+        </dependency>
+
+        <!-- 二维码生成 -->
+        <dependency>
+            <groupId>com.google.zxing</groupId>
+            <artifactId>core</artifactId>
+            <version>${zxing-core.version}</version>
         </dependency>
 
     </dependencies>
