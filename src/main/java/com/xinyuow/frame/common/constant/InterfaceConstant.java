@@ -35,6 +35,9 @@ public class InterfaceConstant implements InitializingBean {
     @Value("${xinyuow.frame.login-info.qr-code-redis.expire}")
     private Integer loginInfoQrCodeRedisExpire;
 
+    @Value("${xinyuow.frame.login-info.qr-code-redis.id-set-key-name}")
+    private String loginInfoQrCodeIdSetRedisKeyName;
+
     /**
      * 登录 - 登录初始计数
      */
@@ -70,6 +73,11 @@ public class InterfaceConstant implements InitializingBean {
      */
     public static Integer LOGIN_INFO_QR_CODE_REDIS_EXPIRE;
 
+    /**
+     * 二维码登录 - 存储二维码ID集合的Redis的key
+     */
+    public static String LOGIN_INFO_QR_CODE_ID_SET_REDIS_KEY_NAME;
+
     @Override
     public void afterPropertiesSet() {
         LOGIN_INFO_INIT_COUNT = loginInfoInitCount;
@@ -79,5 +87,6 @@ public class InterfaceConstant implements InitializingBean {
         LOGIN_INFO_QR_CODE_HEIGHT = loginInfoQrCodeHeight;
         LOGIN_INFO_QR_CODE_REDIS_KEY_NAME = loginInfoQrCodeRedisKeyName;
         LOGIN_INFO_QR_CODE_REDIS_EXPIRE = loginInfoQrCodeRedisExpire;
+        LOGIN_INFO_QR_CODE_ID_SET_REDIS_KEY_NAME = loginInfoQrCodeIdSetRedisKeyName;
     }
 }

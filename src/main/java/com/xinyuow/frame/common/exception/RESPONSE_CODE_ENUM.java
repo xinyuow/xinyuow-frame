@@ -40,6 +40,10 @@ public enum RESPONSE_CODE_ENUM {
     SYS_ROLE_DELETE_FAIL("1011", "系统角色不允许删除"),
     SYS_MENU_DELETE_FAIL("1012", "还存在子菜单，不能直接删除"),
 
+    QR_CODE_LOGIN_ERROR("1020", "二维码登录失败"),
+    QR_CODE_IS_INVALID("1021", "无效的登录二维码"),
+    QR_CODE_IS_TIMED_OUT("1022", "登录二维码已过期"),
+
     /********************* 操作成功 **********************/
     REQUEST_SUCCESS("200", "操作成功");
 

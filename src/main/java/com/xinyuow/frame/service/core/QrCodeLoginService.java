@@ -1,5 +1,9 @@
 package com.xinyuow.frame.service.core;
 
+import com.xinyuow.frame.VO.request.QrCodeLoginScanAuthReqVO;
+import com.xinyuow.frame.VO.response.QrCodeLoginScanAuthResVO;
+import com.xinyuow.frame.VO.response.QrCodeLoginStatusResVO;
+
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
@@ -20,4 +24,19 @@ public interface QrCodeLoginService {
      */
     void generateQrCode(String userAgent, HttpServletResponse response) throws IOException;
 
+    /**
+     * 获取二维码状态
+     *
+     * @param qrCodeId 登录二维码的ID
+     * @return 操作结果
+     */
+    QrCodeLoginStatusResVO getQrCodeStatus(String qrCodeId);
+
+    /**
+     * 扫描认证
+     *
+     * @param qrCodeLoginScanAuth 扫描认证请求对象
+     * @return 操作结果
+     */
+    QrCodeLoginScanAuthResVO scanAuth(QrCodeLoginScanAuthReqVO qrCodeLoginScanAuth);
 }

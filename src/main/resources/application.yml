@@ -147,12 +147,12 @@ shiro:
   redis:
     session:
       # Shiro Session的redis-key
-      key-name: "shiro:admin:shiro_redis_session:"
+      key-name: "xinyuow:shiro:admin:shiro_redis_session:"
       # Shiro Session的超时时间，单位：秒
       expire: 3600
     realm:
       # Shiro Realm的redis-key
-      key-name: "shiro:admin:shiro_redis_realm:"
+      key-name: "xinyuow:shiro:admin:shiro_redis_realm:"
       # Shiro Realm的超时时间，单位：秒
       expire: 3600
   session:
@@ -178,8 +178,10 @@ xinyuow:
       qr-code-height: 300
       # 二维码登录，存储二维码信息的Redis信息
       qr-code-redis:
-        # redis-key
-        key-name: "login:qr_code:"
-        # 超时时间，单位：秒
+        # 二维码信息的redis-key
+        key-name: "xinyuow:login:qr_code:"
+        # 二维码信息的超时时间，单位：秒
         expire: 60
+        # 二维码ID集合的redis-key
+        id-set-key-name: "xinyuow:login:qr_code:id_set:"
 

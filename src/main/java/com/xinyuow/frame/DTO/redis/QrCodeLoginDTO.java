@@ -47,4 +47,10 @@ public class QrCodeLoginDTO implements Serializable {
      */
     @JSONField(name = "qr_code_status")
     private String qrCodeStatus;
+
+    /**
+     * 用户的真实Token
+     */
+    @JSONField(name = "qr_code_status")
+    private String realToken;
 }
