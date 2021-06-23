@@ -5,6 +5,7 @@ import cn.hutool.extra.qrcode.QrCodeUtil;
 import cn.hutool.extra.qrcode.QrConfig;
 import com.alibaba.fastjson.JSON;
 import com.xinyuow.frame.DTO.redis.QrCodeLoginDTO;
+import com.xinyuow.frame.VO.request.QrCodeLoginReconfirmReqVO;
 import com.xinyuow.frame.VO.request.QrCodeLoginScanAuthReqVO;
 import com.xinyuow.frame.VO.response.QrCodeLoginScanAuthResVO;
 import com.xinyuow.frame.VO.response.QrCodeLoginStatusResVO;
@@ -103,7 +104,7 @@ public class QrCodeLoginServiceImpl implements QrCodeLoginService {
         Boolean validFlag = redisTemplate.hasKey(InterfaceConstant.LOGIN_INFO_QR_CODE_REDIS_KEY_NAME + qrCodeId);
         if (null == validFlag || !validFlag) {
             // 二维码已经过期，将其从二维码ID集合中移除
-            redisTemplate.opsForSet().remove(InterfaceConstant.LOGIN_INFO_QR_CODE_ID_SET_REDIS_KEY_NAME, qrCodeId);
+            this.deleteQrCodeIdSetById(qrCodeId);
             result.setQrCodeStatus(QrCodeStatusEnum.TIMED_OUT.name());
             return result;
         }
@@ -111,7 +112,7 @@ public class QrCodeLoginServiceImpl implements QrCodeLoginService {
         QrCodeLoginDTO qrCodeLoginDTO = (QrCodeLoginDTO) redisTemplate.opsForValue().get(InterfaceConstant.LOGIN_INFO_QR_CODE_REDIS_KEY_NAME + qrCodeId);
         if (null == qrCodeLoginDTO) {
             // 二维码信息不存在，将其从二维码ID集合中移除
-            redisTemplate.opsForSet().remove(InterfaceConstant.LOGIN_INFO_QR_CODE_ID_SET_REDIS_KEY_NAME, qrCodeId);
+            this.deleteQrCodeIdSetById(qrCodeId);
             throw new InterfaceException(RESPONSE_CODE_ENUM.QR_CODE_IS_TIMED_OUT);
         }
         // 判断二维码的状态是否为已确认
@@ -121,9 +122,16 @@ public class QrCodeLoginServiceImpl implements QrCodeLoginService {
             }
             result.setToken(qrCodeLoginDTO.getRealToken());
             // 删除二维码信息
-            redisTemplate.delete(InterfaceConstant.LOGIN_INFO_QR_CODE_REDIS_KEY_NAME + qrCodeId);
+            this.deleteQrCodeInfoById(qrCodeId);
             // 删除二维码ID
-            redisTemplate.opsForSet().remove(InterfaceConstant.LOGIN_INFO_QR_CODE_ID_SET_REDIS_KEY_NAME, qrCodeId);
+            this.deleteQrCodeIdSetById(qrCodeId);
+        }
+        // 判断二维码的状态是否为已取消
+        if (StringUtils.equals(QrCodeStatusEnum.CANCELED.name(), qrCodeLoginDTO.getQrCodeStatus())){
+            // 删除二维码信息
+            this.deleteQrCodeInfoById(qrCodeId);
+            // 删除二维码ID
+            this.deleteQrCodeIdSetById(qrCodeId);
         }
         result.setQrCodeStatus(qrCodeLoginDTO.getQrCodeStatus());
         return result;
@@ -142,34 +150,94 @@ public class QrCodeLoginServiceImpl implements QrCodeLoginService {
         if (null == existTokenFlag || !existTokenFlag) {
             throw new InterfaceException(RESPONSE_CODE_ENUM.ACCOUNT_AUTHENTICATION_FAILED);
         }
-        // 判断二维码ID是否存在
-        Boolean existQrCodeFlag = redisTemplate.opsForSet().isMember(InterfaceConstant.LOGIN_INFO_QR_CODE_ID_SET_REDIS_KEY_NAME, qrCodeLoginScanAuth.getQrCodeId());
-        if (null == existQrCodeFlag || !existQrCodeFlag) {
-            throw new InterfaceException(RESPONSE_CODE_ENUM.QR_CODE_IS_INVALID);
-        }
-        // 判断二维码ID是否过期
-        Boolean validQrCodeFlag = redisTemplate.hasKey(InterfaceConstant.LOGIN_INFO_QR_CODE_REDIS_KEY_NAME + qrCodeLoginScanAuth.getQrCodeId());
-        if (null == validQrCodeFlag || !validQrCodeFlag) {
-            // 二维码已经过期，将其从二维码ID集合中移除
-            redisTemplate.opsForSet().remove(InterfaceConstant.LOGIN_INFO_QR_CODE_ID_SET_REDIS_KEY_NAME, qrCodeLoginScanAuth.getQrCodeId());
-            throw new InterfaceException(RESPONSE_CODE_ENUM.QR_CODE_IS_TIMED_OUT);
-        }
         // 从Redis中获取二维码信息
-        QrCodeLoginDTO qrCodeLoginDTO = (QrCodeLoginDTO) redisTemplate.opsForValue().get(InterfaceConstant.LOGIN_INFO_QR_CODE_REDIS_KEY_NAME + qrCodeLoginScanAuth.getQrCodeId());
-        if (null == qrCodeLoginDTO) {
-            // 二维码信息不存在，将其从二维码ID集合中移除
-            redisTemplate.opsForSet().remove(InterfaceConstant.LOGIN_INFO_QR_CODE_ID_SET_REDIS_KEY_NAME, qrCodeLoginScanAuth.getQrCodeId());
-            throw new InterfaceException(RESPONSE_CODE_ENUM.QR_CODE_IS_TIMED_OUT);
-        }
+        QrCodeLoginDTO qrCodeLoginDTO = this.getQrCodeForRedis(qrCodeLoginScanAuth.getQrCodeId());
         // 重置二维码登录信息
         qrCodeLoginDTO.setQrCodeStatus(QrCodeStatusEnum.SCANNED.name());
         qrCodeLoginDTO.setRealToken(qrCodeLoginScanAuth.getToken());
         qrCodeLoginDTO.setTempToken(UUID.randomUUID().toString());
-        // 更新Redis里的二维码登录信息
+        // 更新Redis里的二维码登录信息，并重置超时时间
         redisTemplate.opsForValue().set(InterfaceConstant.LOGIN_INFO_QR_CODE_REDIS_KEY_NAME + qrCodeLoginDTO.getUuid(),
                 JSON.toJSONString(qrCodeLoginDTO), InterfaceConstant.LOGIN_INFO_QR_CODE_REDIS_EXPIRE, TimeUnit.SECONDS);
         // 返回结果
         return QrCodeLoginScanAuthResVO.builder().tempToken(qrCodeLoginDTO.getTempToken()).build();
     }
 
+    /**
+     * 再次确认授权
+     *
+     * @param qrCodeLoginReconfirm 再次确认授权请求对象
+     */
+    @Override
+    public void reconfirm(QrCodeLoginReconfirmReqVO qrCodeLoginReconfirm) {
+        // 从Redis中获取二维码信息
+        QrCodeLoginDTO qrCodeLoginDTO = this.getQrCodeForRedis(qrCodeLoginReconfirm.getQrCodeId());
+        if (!StringUtils.equals(qrCodeLoginReconfirm.getTempToken(), qrCodeLoginDTO.getTempToken())) {
+            // 删除二维码信息
+            this.deleteQrCodeInfoById(qrCodeLoginReconfirm.getQrCodeId());
+            // 删除二维码ID
+            this.deleteQrCodeIdSetById(qrCodeLoginReconfirm.getQrCodeId());
+            throw new InterfaceException(RESPONSE_CODE_ENUM.QR_CODE_TEMP_TOKEN_ERROR);
+        }
+        // 判断授权状态
+        if (qrCodeLoginReconfirm.getConfirmFlag()) {
+            // 用户确认授权
+            qrCodeLoginDTO.setQrCodeStatus(QrCodeStatusEnum.CONFIRMED.name());
+        } else {
+            // 用户取消授权
+            qrCodeLoginDTO.setQrCodeStatus(QrCodeStatusEnum.CANCELED.name());
+            qrCodeLoginDTO.setRealToken(null);
+        }
+        // 更新Redis里的二维码登录信息，并重置超时时间
+        redisTemplate.opsForValue().set(InterfaceConstant.LOGIN_INFO_QR_CODE_REDIS_KEY_NAME + qrCodeLoginDTO.getUuid(),
+                JSON.toJSONString(qrCodeLoginDTO), InterfaceConstant.LOGIN_INFO_QR_CODE_REDIS_EXPIRE, TimeUnit.SECONDS);
+    }
+
+    /**
+     * 通过二维码ID获取Redis缓存中的二维码信息 - 私有方法
+     *
+     * @param qrCodeId 二维码ID
+     * @return 二维码信息对象
+     */
+    private QrCodeLoginDTO getQrCodeForRedis(String qrCodeId) {
+        // 判断二维码ID是否存在
+        Boolean existQrCodeFlag = redisTemplate.opsForSet().isMember(InterfaceConstant.LOGIN_INFO_QR_CODE_ID_SET_REDIS_KEY_NAME, qrCodeId);
+        if (null == existQrCodeFlag || !existQrCodeFlag) {
+            throw new InterfaceException(RESPONSE_CODE_ENUM.QR_CODE_IS_INVALID);
+        }
+        // 判断二维码ID是否过期
+        Boolean validQrCodeFlag = redisTemplate.hasKey(InterfaceConstant.LOGIN_INFO_QR_CODE_REDIS_KEY_NAME + qrCodeId);
+        if (null == validQrCodeFlag || !validQrCodeFlag) {
+            // 二维码已经过期，将其从二维码ID集合中移除
+            this.deleteQrCodeIdSetById(qrCodeId);
+            throw new InterfaceException(RESPONSE_CODE_ENUM.QR_CODE_IS_TIMED_OUT);
+        }
+        // 从Redis中获取二维码信息
+        QrCodeLoginDTO qrCodeLoginDTO = (QrCodeLoginDTO) redisTemplate.opsForValue().get(InterfaceConstant.LOGIN_INFO_QR_CODE_REDIS_KEY_NAME + qrCodeId);
+        if (null == qrCodeLoginDTO) {
+            // 二维码信息不存在，将其从二维码ID集合中移除
+            this.deleteQrCodeIdSetById(qrCodeId);
+            throw new InterfaceException(RESPONSE_CODE_ENUM.QR_CODE_IS_TIMED_OUT);
+        } else {
+            return qrCodeLoginDTO;
+        }
+    }
+
+    /**
+     * 将Redis中二维码信息移除 - 私有方法
+     *
+     * @param qrCodeId 二维码ID
+     */
+    private void deleteQrCodeInfoById(String qrCodeId) {
+        redisTemplate.delete(InterfaceConstant.LOGIN_INFO_QR_CODE_REDIS_KEY_NAME + qrCodeId);
+    }
+
+    /**
+     * 将Redis中二维码ID集合中的指定二维码ID移除 - 私有方法
+     *
+     * @param qrCodeId 二维码ID
+     */
+    private void deleteQrCodeIdSetById(String qrCodeId) {
+        redisTemplate.opsForSet().remove(InterfaceConstant.LOGIN_INFO_QR_CODE_ID_SET_REDIS_KEY_NAME, qrCodeId);
+    }
 }

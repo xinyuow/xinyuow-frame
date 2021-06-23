@@ -44,6 +44,7 @@ public class QrCodeLoginDTO implements Serializable {
      * CREATED：已创建
      * SCANNED：已扫描
      * CONFIRMED：已确认
+     * CANCEL：已取消
      */
     @JSONField(name = "qr_code_status")
     private String qrCodeStatus;

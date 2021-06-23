@@ -85,7 +85,7 @@ public class QrCodeLoginController extends BaseController {
     }
 
     /**
-     * 再次确认授权 TODO
+     * 再次确认授权
      *
      * @param qrCodeLoginReconfirmReqVO 再次确认授权请求对象
      * @return 操作结果
@@ -93,6 +93,7 @@ public class QrCodeLoginController extends BaseController {
     @ApiOperation(value = "再次确认授权", notes = "再次确认(确认登录/取消登录)授权接口")
     @PostMapping(value = "/reconfirm")
     public Map<String, Object> reconfirm(@Valid @RequestBody QrCodeLoginReconfirmReqVO qrCodeLoginReconfirmReqVO) {
+        qrCodeLoginService.reconfirm(qrCodeLoginReconfirmReqVO);
         return getSuccessResult();
     }
 }

@@ -12,7 +12,8 @@ public enum QrCodeStatusEnum {
     SCANNED("已扫描"),
     CONFIRMED("已确认"),
     INVALID("已无效"),
-    TIMED_OUT("已超时");
+    TIMED_OUT("已超时"),
+    CANCELED("已取消");
 
     /**
      * 二维码状态说明

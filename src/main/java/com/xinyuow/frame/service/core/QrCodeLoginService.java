@@ -1,5 +1,6 @@
 package com.xinyuow.frame.service.core;
 
+import com.xinyuow.frame.VO.request.QrCodeLoginReconfirmReqVO;
 import com.xinyuow.frame.VO.request.QrCodeLoginScanAuthReqVO;
 import com.xinyuow.frame.VO.response.QrCodeLoginScanAuthResVO;
 import com.xinyuow.frame.VO.response.QrCodeLoginStatusResVO;
@@ -39,4 +40,11 @@ public interface QrCodeLoginService {
      * @return 操作结果
      */
     QrCodeLoginScanAuthResVO scanAuth(QrCodeLoginScanAuthReqVO qrCodeLoginScanAuth);
+
+    /**
+     * 再次确认授权
+     *
+     * @param qrCodeLoginReconfirm 再次确认授权请求对象
+     */
+    void reconfirm(QrCodeLoginReconfirmReqVO qrCodeLoginReconfirm);
 }

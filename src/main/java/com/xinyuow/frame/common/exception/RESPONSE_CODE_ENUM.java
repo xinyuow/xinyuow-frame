@@ -43,6 +43,7 @@ public enum RESPONSE_CODE_ENUM {
     QR_CODE_LOGIN_ERROR("1020", "二维码登录失败"),
     QR_CODE_IS_INVALID("1021", "无效的登录二维码"),
     QR_CODE_IS_TIMED_OUT("1022", "登录二维码已过期"),
+    QR_CODE_TEMP_TOKEN_ERROR("1023", "请重新扫码登录"),
 
     /********************* 操作成功 **********************/
     REQUEST_SUCCESS("200", "操作成功");
