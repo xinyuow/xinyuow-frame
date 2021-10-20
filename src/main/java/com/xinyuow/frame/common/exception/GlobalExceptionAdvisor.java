@@ -17,6 +17,7 @@ import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.NoHandlerFoundException;
 
 import java.util.HashMap;
 import java.util.List;
@@ -57,6 +58,8 @@ public class GlobalExceptionAdvisor {
             addResCodeToMap(RESPONSE_CODE_ENUM.MEDIA_TYPE_NOT_ACCEPT, map);
         } else if (eClass.equals(HttpMediaTypeNotSupportedException.class)) {
             addResCodeToMap(RESPONSE_CODE_ENUM.MEDIA_TYPE_NOT_SUPPORTED, map);
+        } else if (eClass.equals(NoHandlerFoundException.class)){
+            addResCodeToMap(RESPONSE_CODE_ENUM.RESOURCE_NOT_FOUND, map);
         } else if (eClass.equals(ConversionNotSupportedException.class)) {
             addResCodeToMap(RESPONSE_CODE_ENUM.SERVER_ERROR, map);
         } else if (eClass.equals(HttpMessageNotWritableException.class)) {
