@@ -1,10 +1,12 @@
 package com.xinyuow.frame.common.mybatis;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.baomidou.mybatisplus.generator.AutoGenerator;
 import com.baomidou.mybatisplus.generator.InjectionConfig;
 import com.baomidou.mybatisplus.generator.config.*;
+import com.baomidou.mybatisplus.generator.config.po.TableFill;
 import com.baomidou.mybatisplus.generator.config.po.TableInfo;
 import com.baomidou.mybatisplus.generator.config.rules.DateType;
 import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
@@ -131,6 +133,13 @@ public class CodeGenerator {
         sc.setColumnNaming(NamingStrategy.underline_to_camel);  // 列名生成策略(下划线转驼峰命名)
         sc.setSuperControllerClass(SUPER_CONTROLLER_CLASS); // 自定义controller父类
         sc.setInclude(tableName.split(","));   // 修改替换成需要包含的表名
+
+        // 自定义需要填充的字段 数据库中的字段
+        List<TableFill> tableFillList = new ArrayList<>();
+        tableFillList.add(new TableFill("create_date", FieldFill.INSERT));
+        tableFillList.add(new TableFill("modify_date", FieldFill.INSERT_UPDATE));
+        // 自动填充设置
+        sc.setTableFillList(tableFillList);
         mpg.setStrategy(sc);
 
         // 自定义配置

@@ -74,7 +74,6 @@ public class MyShiroRealm extends AuthorizingRealm {
                     user.setLoginFailCnt(InterfaceConstant.LOGIN_INFO_INIT_COUNT);
                     user.setLockFlag(Boolean.FALSE);
                     user.setLockedDate(null);
-                    user.setModifyDate(LocalDateTime.now());
                     userMapper.updateById(user);
                 } else {
                     throw new LockedAccountException();
@@ -91,14 +90,12 @@ public class MyShiroRealm extends AuthorizingRealm {
                     user.setLockedDate(LocalDateTime.now());
                 }
                 user.setLoginFailCnt(loginFailCount);
-                user.setModifyDate(LocalDateTime.now());
                 userMapper.updateById(user);
                 throw new IncorrectCredentialsException();
             }
 
             // 更新用户信息，并清空之前失败的次数
             user.setLoginFailCnt(InterfaceConstant.LOGIN_INFO_INIT_COUNT);
-            user.setModifyDate(LocalDateTime.now());
             userMapper.updateById(user);
 
             /*
