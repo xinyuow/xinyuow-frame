@@ -7,11 +7,9 @@
  */
 package com.xinyuow.frame.model.core;
 
-import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.*;
+
 import java.time.LocalDateTime;
-import com.baomidou.mybatisplus.annotation.TableField;
 import java.io.Serializable;
 
 import lombok.Builder;
@@ -61,11 +59,11 @@ public class Role implements Serializable {
     private Integer roleType;
 
     @ApiModelProperty("创建时间")
-    @TableField("create_date")
+    @TableField(value = "create_date", fill = FieldFill.INSERT)
     private LocalDateTime createDate;
 
     @ApiModelProperty("修改时间")
-    @TableField("modify_date")
+    @TableField(value = "modify_date", fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime modifyDate;
 
 }

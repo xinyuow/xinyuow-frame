@@ -67,41 +67,48 @@ public class ${entity} implements Serializable {
 ## ----------  BEGIN 字段循环遍历  ----------
 #foreach($field in ${table.fields})
 ## 自定义属性，是否是主键
-#set($custom_is_pk=false)
+    #set($custom_is_pk=false)
 
-#if(${field.keyFlag})
-#set($keyPropertyName=${field.propertyName})
-#end
-#if("$!field.comment" != "")
-#if(${swagger2})
+    #if(${field.keyFlag})
+        #set($keyPropertyName=${field.propertyName})
+    #end
+    #if("$!field.comment" != "")
+    #if(${swagger2})
     @ApiModelProperty("${field.comment}")
-#else
+    #else
     /**
      * ${field.comment}
      */
-#end
-#end
-#if(${field.keyFlag})
-## 主键
-#if(${field.keyIdentityFlag})
-    @TableId(value = "${field.name}", type = IdType.AUTO)
-#elseif(!$null.isNull(${idType}) && "$!idType" != "")
-## 设置主键注解
-    @TableId(value = "${field.name}", type = IdType.${idType})
-## 是主键类型
-#set($custom_is_pk=true)
-#elseif(${field.convert})
-    @TableId("${field.name}")
-#end
-## 普通字段
-#elseif(${field.convert})
+    #end
+    #end
+    #if(${field.keyFlag})
+    ## 主键
+    #if(${field.keyIdentityFlag})
+@TableId(value = "${field.name}", type = IdType.AUTO)
+    #elseif(!$null.isNull(${idType}) && "$!idType" != "")
+    ## 设置主键注解
+@TableId(value = "${field.name}", type = IdType.${idType})
+    ## 是主键类型
+    #set($custom_is_pk=true)
+    #elseif(${field.convert})
+@TableId("${field.name}")
+    #end
+    ## 普通字段
+    #elseif(${field.fill})
+    ## -----   存在字段填充设置   -----
+    #if(${field.convert})
+@TableField(value = "${field.name}", fill = FieldFill.${field.fill})
+    #else
+@TableField(fill = FieldFill.${field.fill})
+    #end
+    #elseif(${field.convert})
     @TableField("${field.name}")
-#end
-#if(${custom_is_pk})
+    #end
+    #if(${custom_is_pk})
+private ${field.propertyType} ${field.propertyName};
+    #else
     private ${field.propertyType} ${field.propertyName};
-#else
-    private ${field.propertyType} ${field.propertyName};
-#end
+    #end
 #end
 
 ## ----------  END 字段循环遍历  ----------
@@ -113,20 +120,20 @@ public class ${entity} implements Serializable {
             #set($getprefix="get")
         #end
 
-    public ${field.propertyType} ${getprefix}${field.capitalName}() {
-        return ${field.propertyName};
-    }
+    public ${field.propertyType} ${getprefix}${field.capitalName}(){
+            return ${field.propertyName};
+            }
 
-    #if(${entityBuilderModel})
-    public ${entity} set${field.capitalName}(${field.propertyType} ${field.propertyName}) {
-    #else
-    public void set${field.capitalName}(${field.propertyType} ${field.propertyName}) {
-    #end
-        this.${field.propertyName} = ${field.propertyName};
-    #if(${entityBuilderModel})
-        return this;
-    #end
-    }
+        #if(${entityBuilderModel})
+        public ${entity} set${field.capitalName}(${field.propertyType} ${field.propertyName}){
+        #else
+        public void set${field.capitalName}(${field.propertyType} ${field.propertyName}) {
+        #end
+            this.${field.propertyName} = ${field.propertyName};
+        #if(${entityBuilderModel})
+                return this;
+        #end
+            }
     #end
 
 #end
@@ -137,19 +144,19 @@ public class ${entity} implements Serializable {
 
 #end
 #if(${activeRecord})
-    @Override
-    protected Serializable pkVal() {
-        #if(${keyPropertyName})
+@Override
+protected Serializable pkVal(){
+    #if(${keyPropertyName})
             return this.${keyPropertyName};
-        #else
+    #else
             return this.id;
-        #end
-    }
+    #end
+        }
 
 #end
 #if(!${entityLombokModel})
-    @Override
-    public String toString() {
+@Override
+public String toString() {
         return "${entity} {" +
     #foreach($field in ${table.fields})
         #if($!{velocityCount} == 1)
@@ -159,7 +166,6 @@ public class ${entity} implements Serializable {
         #end
     #end
         "}";
-    }
-
+        }
 #end
 }
