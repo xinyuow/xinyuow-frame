@@ -62,6 +62,11 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
         // 静态资源拦截
         registry.addResourceHandler("/static/**")
                 .addResourceLocations("classpath:/static/");
+        // 放行swagger相关资源
+        registry.addResourceHandler("/swagger-ui.html")
+                .addResourceLocations("classpath:/META-INF/resources/", "/static", "/public");
+        registry.addResourceHandler("/webjars/**")
+                .addResourceLocations("classpath:/META-INF/resources/webjars/");
     }
 
     /**
