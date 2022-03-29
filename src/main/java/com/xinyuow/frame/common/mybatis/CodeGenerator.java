@@ -1,6 +1,5 @@
 package com.xinyuow.frame.common.mybatis;
 
-import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
@@ -11,6 +10,7 @@ import com.baomidou.mybatisplus.generator.config.po.TableFill;
 import com.baomidou.mybatisplus.generator.config.po.TableInfo;
 import com.baomidou.mybatisplus.generator.config.rules.DateType;
 import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,22 +60,32 @@ public class CodeGenerator {
     // 自定义 model.java 的类路径
     private final static String ENTITY_PATH = "model.app";
 
-    // 需要自动填充的表字段名称 - 创建时间
-    public final static String TABLE_FIELD_FILL_CREATE_DATE = "create_date";
-    // 需要自动填充的表字段名称 - 修改时间
-    public final static String TABLE_FIELD_FILL_MODIFY_DATE = "modify_date";
+    // 自动填充的表字段名称-创建时间
+    private final static String TABLE_FIELD_FILL_CREATE_DATE = "create_date";
+    // 自动填充的表字段名称-修改时间
+    private final static String TABLE_FIELD_FILL_MODIFY_DATE = "modify_date";
 
 
     /**
      * 生成基础代码
+     * 需要修改的内容：
+     * 1.代码生成位置：{@link CodeGenerator#PROJECT_PATH}
+     * 2.开发人员名称：{@link CodeGenerator#AUTHOR}
+     * 3.MySQL的链接信息：{@link CodeGenerator#DB_URL}
+     * 4.通用表前缀：{@link CodeGenerator#TABLE_PREFIX}
+     * 5.自动填充的表字段名称-创建时间：{@link CodeGenerator#TABLE_FIELD_FILL_CREATE_DATE}
+     * 6.自动填充的表字段名称-修改时间：{@link CodeGenerator#TABLE_FIELD_FILL_MODIFY_DATE}
+     * <p>
      * 注意：新生成的代码会覆盖原有代码！！！
      */
     public static void main(String[] args) {
         // 待生成的表名
         String tableName = "";
 
-        // 调用基础代码生成方法
-        generateCode(tableName);
+        if (StringUtils.isNotBlank(tableName)) {
+            // 调用基础代码生成方法
+            generateCode(tableName);
+        }
     }
 
     /**

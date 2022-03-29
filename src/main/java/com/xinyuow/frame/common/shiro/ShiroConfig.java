@@ -51,11 +51,9 @@ public class ShiroConfig {
         filterChainDefinitionMap.put("/api/login", "anon");                 // 登录
         filterChainDefinitionMap.put("/api/qr_code/**", "anon");            // 放行二维码登录相关接口
 
-        filterChainDefinitionMap.put("/swagger-ui.html", "anon");           // 放行swagger2
-        filterChainDefinitionMap.put("/doc.html", "anon");                  // 放行swagger2
+        filterChainDefinitionMap.put("/swagger-ui/**", "anon");             // 放行swagger2
         filterChainDefinitionMap.put("/swagger-resources/**", "anon");      // 放行swagger2
-        filterChainDefinitionMap.put("/v2/**", "anon");                     // 放行swagger2
-        filterChainDefinitionMap.put("/webjars/**", "anon");                // 放行swagger2
+        filterChainDefinitionMap.put("/v3/**", "anon");                     // 放行swagger2
 
         filterChainDefinitionMap.put("/static/**", "anon");                 // 放行静态页面
 
