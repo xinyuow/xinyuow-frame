@@ -1,5 +1,6 @@
 package com.xinyuow.frame.common.mybatis;
 
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
@@ -61,9 +62,9 @@ public class CodeGenerator {
     private final static String ENTITY_PATH = "model.app";
 
     // 自动填充的表字段名称-创建时间
-    private final static String TABLE_FIELD_FILL_CREATE_DATE = "create_date";
+    public final static String TABLE_FIELD_FILL_CREATE_DATE = "create_date";
     // 自动填充的表字段名称-修改时间
-    private final static String TABLE_FIELD_FILL_MODIFY_DATE = "modify_date";
+    public final static String TABLE_FIELD_FILL_MODIFY_DATE = "modify_date";
 
 
     /**
