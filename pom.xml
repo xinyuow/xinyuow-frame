@@ -29,16 +29,18 @@
         <commons-lang3.version>3.7</commons-lang3.version>
         <lombok.version>1.16.20</lombok.version>
         <springfox-swagger2.version>2.9.2</springfox-swagger2.version>
-        <springfox-swagger-ui.version>2.9.2</springfox-swagger-ui.version>
+        <springfox-swagger-ui.version>2.10.0</springfox-swagger-ui.version>
         <swagger-annotations.version>1.5.21</swagger-annotations.version>
         <swagger-models.version>1.5.21</swagger-models.version>
         <hutool-all.version>5.3.8</hutool-all.version>
         <mybatis-plus.version>3.5.1</mybatis-plus.version>
         <mybatis-plus-generator.version>3.3.2</mybatis-plus-generator.version>
-        <velocity-engine-core.version>2.2</velocity-engine-core.version>
+        <velocity-engine-core.version>2.3</velocity-engine-core.version>
         <apache.shiro.version>1.8.0</apache.shiro.version>
         <shiro-redis.version>3.2.3</shiro-redis.version>
         <jedis.version>2.10.2</jedis.version>
+        <!-- 升级Tomcat版本，避免漏洞 -->
+        <tomcat.version>9.0.48</tomcat.version>
 
         <!-- 跳过单元测试 -->
         <skipTests>true</skipTests>
@@ -167,6 +169,12 @@
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-boot-starter</artifactId>
             <version>${mybatis-plus.version}</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>mybatis-plus-extension</artifactId>
+                    <groupId>com.baomidou</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.baomidou</groupId>
