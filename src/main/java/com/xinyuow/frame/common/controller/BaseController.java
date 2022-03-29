@@ -56,7 +56,7 @@ public class BaseController implements Serializable {
      * @param initPageSize 执行每页记录数
      * @return 指定类型的分页对象
      */
-    protected  <T> Page<T> getPage(long initPageSize) {
+    protected <T> Page<T> getPage(long initPageSize) {
         // 初始化当前页数、每页最大数量
         long pageSize = initPageSize;
         long pageNumber = DEFAULT_PAGE_NUMBER;
