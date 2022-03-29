@@ -17,9 +17,13 @@ spring:
   mvc:
     # 出现错误时，直接抛出异常(便于异常统一处理，否则捕获不到404)
     throw-exception-if-no-handler-found: true
-  resources:
-    # 不要为我们工程中的资源文件建立映射
-    add-mappings: false
+    pathmatch:
+      # SpringBoot2.6.5使用PathPatternMatcher匹配路径，Swagger引用的Springfox使用的路径匹配是基于AntPathMatcher的
+      matching-strategy: ant_path_matcher
+  web:
+    resources:
+      # 不要为我们工程中的资源文件建立映射
+      add-mappings: false
   flyway:
     enabled: true
     encoding: UTF-8
@@ -35,7 +39,9 @@ spring:
 ---
 ## 测试环境
 spring:
-  profiles: test
+  config:
+    activate:
+      on-profile: test
   datasource:
     druid:
       db-type: mysql
@@ -78,7 +84,9 @@ spring:
 ---
 ## 生产环境
 spring:
-  profiles: dev
+  config:
+    activate:
+      on-profile: dev
   datasource:
     druid:
       db-type: mysql
@@ -178,4 +186,3 @@ xinyuow:
       max-fail-count: 5
       # 锁定时间，单位：分钟
       lock-time: 10
-
