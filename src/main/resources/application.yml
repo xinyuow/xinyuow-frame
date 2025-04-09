@@ -48,7 +48,7 @@ spring:
       driver-class-name: com.mysql.cj.jdbc.Driver
       url: jdbc:mysql://localhost:3306/xinyuow?characterEncoding=UTF-8&autoReconnect=true&failOverReadOnly=false&maxReconnects=10&allowMultiQueries=true&serverTimezone=Asia/Shanghai
       username: root
-      password: 123456
+      password: 123456789
       # 初始化连接数
       initial-size: 1
       # 最小闲置数
@@ -93,7 +93,7 @@ spring:
       driver-class-name: com.mysql.cj.jdbc.Driver
       url: jdbc:mysql://localhost:3306/xinyuow?characterEncoding=UTF-8&autoReconnect=true&failOverReadOnly=false&maxReconnects=10&allowMultiQueries=true&serverTimezone=Asia/Shanghai
       username: root
-      password: 123456
+      password: 123456789
       # 初始化连接数
       initial-size: 1
       # 最小闲置数
