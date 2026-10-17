@@ -1,6 +1,8 @@
 package com.xinyuow.frame.common.config;
 
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
+import com.xinyuow.frame.common.mybatis.CodeGenerator;
 import org.apache.ibatis.reflection.MetaObject;
 import org.springframework.stereotype.Component;
 
@@ -20,8 +22,8 @@ public class MetaObjectHandlerConfig implements MetaObjectHandler {
      */
     @Override
     public void insertFill(MetaObject metaObject) {
-        this.setFieldValByName("createDate", LocalDateTime.now(), metaObject);
-        this.setFieldValByName("modifyDate", LocalDateTime.now(), metaObject);
+        this.setFieldValByName(StrUtil.toCamelCase(CodeGenerator.TABLE_FIELD_FILL_CREATE_DATE), LocalDateTime.now(), metaObject);
+        this.setFieldValByName(StrUtil.toCamelCase(CodeGenerator.TABLE_FIELD_FILL_MODIFY_DATE), LocalDateTime.now(), metaObject);
     }
 
     /**
@@ -29,6 +31,6 @@ public class MetaObjectHandlerConfig implements MetaObjectHandler {
      */
     @Override
     public void updateFill(MetaObject metaObject) {
-        this.setFieldValByName("modifyDate", LocalDateTime.now(), metaObject);
+        this.setFieldValByName(StrUtil.toCamelCase(CodeGenerator.TABLE_FIELD_FILL_MODIFY_DATE), LocalDateTime.now(), metaObject);
     }
 }
