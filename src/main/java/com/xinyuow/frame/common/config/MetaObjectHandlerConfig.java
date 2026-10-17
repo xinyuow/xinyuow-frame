@@ -1,8 +1,13 @@
+/*
+ * MetaObjectHandlerConfig.java
+ * Copyright © 2026 xinyuow
+ * All rights reserved.
+ * --------------------------------------------------------
+ * Created by xinyuow on 2026-10-17
+ */
 package com.xinyuow.frame.common.config;
 
-import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
-import com.xinyuow.frame.common.mybatis.CodeGenerator;
 import org.apache.ibatis.reflection.MetaObject;
 import org.springframework.stereotype.Component;
 
@@ -11,8 +16,8 @@ import java.time.LocalDateTime;
 /**
  * 配置公共字段自动填充功能  @TableField(..fill = FieldFill.INSERT)
  *
- * @author mxy
- * @date 2021/11/4
+ * @author xinyuow
+ * @date 2026-10-17
  */
 @Component
 public class MetaObjectHandlerConfig implements MetaObjectHandler {
@@ -22,8 +27,9 @@ public class MetaObjectHandlerConfig implements MetaObjectHandler {
      */
     @Override
     public void insertFill(MetaObject metaObject) {
-        this.setFieldValByName(StrUtil.toCamelCase(CodeGenerator.TABLE_FIELD_FILL_CREATE_DATE), LocalDateTime.now(), metaObject);
-        this.setFieldValByName(StrUtil.toCamelCase(CodeGenerator.TABLE_FIELD_FILL_MODIFY_DATE), LocalDateTime.now(), metaObject);
+        LocalDateTime now = LocalDateTime.now();
+        this.setFieldValByName("createDate", now, metaObject);
+        this.setFieldValByName("modifyDate", now, metaObject);
     }
 
     /**
@@ -31,6 +37,6 @@ public class MetaObjectHandlerConfig implements MetaObjectHandler {
      */
     @Override
     public void updateFill(MetaObject metaObject) {
-        this.setFieldValByName(StrUtil.toCamelCase(CodeGenerator.TABLE_FIELD_FILL_MODIFY_DATE), LocalDateTime.now(), metaObject);
+        this.setFieldValByName("modifyDate", LocalDateTime.now(), metaObject);
     }
 }

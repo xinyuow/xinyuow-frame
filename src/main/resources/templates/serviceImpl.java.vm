@@ -1,9 +1,9 @@
 /*
  * ${table.serviceImplName}.java
- * Copyright(C) xinyuow
+ * Copyright © 2026 ${author}
  * All rights reserved.
- * -----------------------------------------------
- * ${date} Created by ${author}
+ * --------------------------------------------------------
+ * Created by ${author} on ${date}
  */
 package ${package.ServiceImpl};
 
@@ -12,6 +12,7 @@ import ${package.Service}.${table.serviceName};
 import ${superServiceImplClassPackage};
 import ${package.Mapper}.${table.mapperName};
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -32,6 +33,7 @@ import org.springframework.stereotype.Service;
 #end
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class ${table.serviceImplName} extends ServiceImpl<${table.mapperName}, ${entity}> implements ${table.serviceName} {
 
 }

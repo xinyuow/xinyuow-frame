@@ -1,13 +1,13 @@
 /*
  * ${table.mapperName}.java
- * Copyright(C) xinyuow
+ * Copyright © 2026 ${author}
  * All rights reserved.
- * -----------------------------------------------
- * ${date} Created by ${author}
+ * --------------------------------------------------------
+ * Created by ${author} on ${date}
  */
 package ${package.Mapper};
 
-import ${superMapperClassPackage};
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import ${package.Entity}.${entity};
 
 #if($!{table.comment})

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <!-- 项目名称 -->
+    <property name="PROJECT_NAME" value="xinyuow-frame"/>
+    <!-- 日志级别 -->
+    <property name="LOG_LEVEL" value="INFO"/>
+    <!-- 日志文件前缀 -->
+    <property name="LOG_FILE_PREFIX" value="xinyuow_frame"/>
+    <!-- 日志目录：相对于应用启动工作目录 -->
+    <property name="LOG_DIR" value="${PROJECT_NAME}-log"/>
+    <!-- INFO 日志最大保留天数 -->
+    <property name="INFO_MAX_HISTORY" value="2"/>
+    <!-- ERROR 日志最大保留天数 -->
+    <property name="ERROR_MAX_HISTORY" value="3"/>
+    <!-- INFO 日志归档文件总大小上限 -->
+    <property name="INFO_TOTAL_SIZE_CAP" value="100MB"/>
+
+    <!-- ==================== 控制台日志 ==================== -->
+    <appender name="consoleApp" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level --- [%thread] %logger{56}.%method : %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- ==================== INFO 日志 ==================== -->
+    <!-- ERROR 日志不写入该文件 -->
+    <appender name="fileInfoApp" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>DENY</onMatch>
+            <onMismatch>ACCEPT</onMismatch>
+        </filter>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level --- [%thread] %logger{56}.%method : %msg%n</pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_DIR}/info/${LOG_FILE_PREFIX}_info.%d.log</fileNamePattern>
+            <!-- 保留指定天数的日志 -->
+            <maxHistory>${INFO_MAX_HISTORY}</maxHistory>
+            <!-- 设置 INFO 日志归档文件总大小上限 -->
+            <totalSizeCap>${INFO_TOTAL_SIZE_CAP}</totalSizeCap>
+            <!-- 应用启动时清理过期日志 -->
+            <cleanHistoryOnStart>true</cleanHistoryOnStart>
+        </rollingPolicy>
+    </appender>
+
+    <!-- ==================== ERROR 日志 ==================== -->
+    <!-- 只保存 ERROR 及以上级别的日志 -->
+    <appender name="fileErrorApp" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level --- [%thread] %logger{56}.%method : %msg%n</pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_DIR}/error/${LOG_FILE_PREFIX}_err.%d.log</fileNamePattern>
+            <!-- 保留指定天数的日志 -->
+            <maxHistory>${ERROR_MAX_HISTORY}</maxHistory>
+            <!-- 应用启动时清理过期日志 -->
+            <cleanHistoryOnStart>true</cleanHistoryOnStart>
+        </rollingPolicy>
+    </appender>
+
+    <!-- ==================== Root Logger ==================== -->
+    <root level="${LOG_LEVEL}">
+        <appender-ref ref="consoleApp"/>
+        <appender-ref ref="fileInfoApp"/>
+        <appender-ref ref="fileErrorApp"/>
+    </root>
+</configuration>

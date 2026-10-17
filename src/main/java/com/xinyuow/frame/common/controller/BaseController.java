@@ -1,170 +1,77 @@
+/*
+ * BaseController.java
+ * Copyright © 2026 xinyuow
+ * All rights reserved.
+ * --------------------------------------------------------
+ * Created by xinyuow on 2026-10-17
+ */
 package com.xinyuow.frame.common.controller;
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.xinyuow.frame.common.exception.GlobalExceptionAdvisor;
-import com.xinyuow.frame.common.exception.RESPONSE_CODE_ENUM;
-import com.xinyuow.frame.model.core.User;
-import com.xinyuow.frame.service.core.UserService;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.subject.Subject;
+import com.xinyuow.frame.common.exception.ResponseCodeEnum;
+import com.xinyuow.frame.common.model.ResponseInfo;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
+import java.io.Serial;
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
- * controller 基础控制器
+ * 基类控制器
  *
- * @author mxy
- * @date 2020/11/12
+ * @author xinyuow
+ * @date 2026-10-17
  */
-@Slf4j
-public class BaseController implements Serializable {
-    private static final long serialVersionUID = 624841049563451448L;
-
-    @Resource
-    protected HttpServletRequest request;
-
-    @Resource(name = "userServiceImpl")
-    private UserService userService;
-
-    /**
-     * 默认起始页
-     */
-    private static final long DEFAULT_PAGE_NUMBER = 1;
-
-    /**
-     * 默认每页记录数
-     */
-    private static final long DEFAULT_PAGE_SIZE = 10;
-
-    /**
-     * 获取分页对象
-     *
-     * @return 指定类型的分页对象
-     */
-    protected <T> Page<T> getPage() {
-        return getPage(DEFAULT_PAGE_SIZE);
-    }
-
-    /**
-     * 获取分页对象
-     *
-     * @param initPageSize 执行每页记录数
-     * @return 指定类型的分页对象
-     */
-    protected <T> Page<T> getPage(long initPageSize) {
-        // 初始化当前页数、每页最大数量
-        long pageSize = initPageSize;
-        long pageNumber = DEFAULT_PAGE_NUMBER;
-        // 判断前端是否传入分页参数
-        if (null != request.getParameter("pageSize")) {
-            pageSize = Long.parseLong(request.getParameter("pageSize"));
-        }
-        if (null != request.getParameter("pageNumber")) {
-            pageNumber = Long.parseLong(request.getParameter("pageNumber"));
-        }
-        return new Page<>(pageNumber, pageSize);
-    }
+public abstract class BaseController implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 633761073272414212L;
 
     /**
      * 添加数据到结果对象中
      *
-     * @param obj 封装接口集合参数
-     * @return map
+     * @param body 封装接口实体内容
+     * @return 接口响应对象
      */
-    protected Map<String, Object> getResult(Object obj) {
-        Map<String, Object> map = new HashMap<>();
-        map.put(GlobalExceptionAdvisor.RESPONSE_CODE, RESPONSE_CODE_ENUM.REQUEST_SUCCESS.getCode());
-        map.put(GlobalExceptionAdvisor.RESPONSE_MSG, RESPONSE_CODE_ENUM.REQUEST_SUCCESS.getMsg());
-        map.put(GlobalExceptionAdvisor.RESPONSE_BODY, obj);
-        return map;
+    protected <T> ResponseInfo<T> getResult(T body) {
+        return ResponseInfo.<T>builder().code(ResponseCodeEnum.REQUEST_SUCCESS.getCode())
+                .msg(ResponseCodeEnum.REQUEST_SUCCESS.getMsg()).body(body).build();
     }
 
     /**
      * 返回成功
      *
-     * @return map
+     * @return 接口响应对象
      */
-    protected Map<String, Object> getSuccessResult() {
-        Map<String, Object> map = new HashMap<>();
-        map.put(GlobalExceptionAdvisor.RESPONSE_CODE, RESPONSE_CODE_ENUM.REQUEST_SUCCESS.getCode());
-        map.put(GlobalExceptionAdvisor.RESPONSE_MSG, RESPONSE_CODE_ENUM.REQUEST_SUCCESS.getMsg());
-        return map;
+    protected <T> ResponseInfo<T> getSuccessResult() {
+        return ResponseInfo.<T>builder().code(ResponseCodeEnum.REQUEST_SUCCESS.getCode())
+                .msg(ResponseCodeEnum.REQUEST_SUCCESS.getMsg()).build();
     }
 
     /**
-     * 返回失败
+     * 返回失败 - 自定义返回结果（根据枚举类）
      *
      * @param responseCodeEnum 特定状态码枚举
-     * @return map
+     * @return 接口响应对象
      */
-    protected Map<String, Object> getFailResult(RESPONSE_CODE_ENUM responseCodeEnum) {
-        Map<String, Object> map = new HashMap<>();
-        map.put(GlobalExceptionAdvisor.RESPONSE_CODE, responseCodeEnum.getCode());
-        map.put(GlobalExceptionAdvisor.RESPONSE_MSG, responseCodeEnum.getMsg());
-        return map;
+    protected <T> ResponseInfo<T> getFailResult(ResponseCodeEnum responseCodeEnum) {
+        return ResponseInfo.<T>builder().code(responseCodeEnum.getCode()).msg(responseCodeEnum.getMsg()).build();
     }
 
     /**
-     * 返回失败
+     * 返回失败 - 自定义返回结果（根据状态码和失败原因）
      *
      * @param code 状态码
      * @param msg  失败原因
-     * @return map
+     * @return 接口响应对象
      */
-    protected Map<String, Object> getFailResult(String code, String msg) {
-        Map<String, Object> map = new HashMap<>();
-        map.put(GlobalExceptionAdvisor.RESPONSE_CODE, code);
-        map.put(GlobalExceptionAdvisor.RESPONSE_MSG, msg);
-        return map;
+    protected <T> ResponseInfo<T> getFailResult(String code, String msg) {
+        return ResponseInfo.<T>builder().code(code).msg(msg).build();
     }
 
     /**
-     * 返回失败
+     * 返回失败 - 默认返回结果（服务器错误）
      *
-     * @return map
+     * @return 接口响应对象
      */
-    protected Map<String, Object> getFailResult() {
-        Map<String, Object> map = new HashMap<>();
-        map.put(GlobalExceptionAdvisor.RESPONSE_CODE, RESPONSE_CODE_ENUM.SERVER_ERROR.getCode());
-        map.put(GlobalExceptionAdvisor.RESPONSE_MSG, RESPONSE_CODE_ENUM.SERVER_ERROR.getMsg());
-        return map;
+    protected <T> ResponseInfo<T> getFailResult() {
+        return ResponseInfo.<T>builder().code(ResponseCodeEnum.SERVER_ERROR.getCode())
+                .msg(ResponseCodeEnum.SERVER_ERROR.getMsg()).build();
     }
-
-    /**
-     * 获取当前登录的用户
-     *
-     * @return 登录用户信息
-     */
-    protected User getCurrentUser() {
-        Subject subject = SecurityUtils.getSubject();
-        if (subject != null) {
-            User user = (User) subject.getPrincipal();
-            if (user != null) {
-                return userService.getById(user.getId());
-            }
-        }
-        return null;
-    }
-
-    /**
-     * 获取当前登录的用户ID
-     *
-     * @return 登录用户ID
-     */
-    protected Long getCurrentUserId() {
-        Subject subject = SecurityUtils.getSubject();
-        if (subject != null) {
-            User user = (User) subject.getPrincipal();
-            if (user != null) {
-                return user.getId();
-            }
-        }
-        return null;
-    }
-
 }

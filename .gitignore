@@ -33,3 +33,8 @@ build/
 ### JRebel ###
 rebel.xml
 rebel-remote.xml
+
+### ignore file ###
+*.log
+.env
+*.env

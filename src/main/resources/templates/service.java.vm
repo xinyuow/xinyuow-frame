@@ -1,9 +1,9 @@
 /*
  * ${table.serviceName}.java
- * Copyright(C) xinyuow
+ * Copyright © 2026 ${author}
  * All rights reserved.
- * -----------------------------------------------
- * ${date} Created by ${author}
+ * --------------------------------------------------------
+ * Created by ${author} on ${date}
  */
 package ${package.Service};
 
