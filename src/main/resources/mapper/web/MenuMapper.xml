@@ -7,8 +7,8 @@
         <id column="id" property="id"/>
         <result column="parent_id" property="parentId"/>
         <result column="name" property="name"/>
-        <result column="url" property="url"/>
-        <result column="perms" property="perms"/>
+        <result column="path" property="path"/>
+        <result column="code" property="code"/>
         <result column="type" property="type"/>
         <result column="icon" property="icon"/>
         <result column="sort" property="sort"/>
@@ -20,7 +20,7 @@
     <!-- 通过用户ID查询对应的菜单权限集合 -->
     <select id="findOrdinaryMenu" resultMap="BaseResultMap">
         SELECT
-            id, parent_id, `name`, url, perms, `type`, icon, sort, remark, create_date, modify_date
+            id, parent_id, `name`, `path`, `code`, `type`, icon, sort, remark, create_date, modify_date
         FROM s_menu M
         WHERE M.id
         IN (

@@ -45,21 +45,21 @@ public class User implements Serializable {
     @TableField("login_name")
     private String loginName;
 
-    @Schema(description = "用户名称")
-    @TableField("user_name")
-    private String userName;
-
     @Schema(description = "登录密码")
-    @TableField("login_pwd")
-    private String loginPwd;
+    @TableField("login_password")
+    private String loginPassword;
+
+    @Schema(description = "用户名称")
+    @TableField("username")
+    private String username;
 
     @Schema(description = "用户状态;0:启动 1:禁用")
     @TableField("status")
     private Integer status;
 
     @Schema(description = "登录失败次数")
-    @TableField("login_fail_cnt")
-    private Integer loginFailCnt;
+    @TableField("login_fail_count")
+    private Integer loginFailCount;
 
     @Schema(description = "是否锁定;1:是 0:否")
     @TableField("lock_flag")

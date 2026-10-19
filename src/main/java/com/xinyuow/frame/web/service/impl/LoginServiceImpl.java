@@ -99,7 +99,7 @@ public class LoginServiceImpl extends ServiceImpl<UserMapper, User> implements L
             // 判断锁定时间是否已过
             if (LocalDateTime.now().isAfter(user.getLockedDate().plus(webUserProperties.getLockTime()))) {
                 // 更新锁定信息
-                user.setLoginFailCnt(webUserProperties.getInitFailCount());
+                user.setLoginFailCount(webUserProperties.getInitFailCount());
                 user.setLockFlag(Boolean.FALSE);
                 user.setLockedDate(null);
                 userMapper.updateById(user);
@@ -109,21 +109,21 @@ public class LoginServiceImpl extends ServiceImpl<UserMapper, User> implements L
         }
 
         // 判断密码是否正确
-        if (!passwordEncoder.matches(password, user.getLoginPwd())) {
+        if (!passwordEncoder.matches(password, user.getLoginPassword())) {
             // 设置失败次数+1
-            int loginFailCount = user.getLoginFailCnt() + 1;
+            int loginFailCount = user.getLoginFailCount() + 1;
             // 如果失败次数大于等于指定次数，则锁定账户。规定时间后登录会自动解除锁定。
             if (loginFailCount >= webUserProperties.getMaxFailCount()) {
                 user.setLockFlag(Boolean.TRUE);
                 user.setLockedDate(LocalDateTime.now());
             }
-            user.setLoginFailCnt(loginFailCount);
+            user.setLoginFailCount(loginFailCount);
             userMapper.updateById(user);
             throw new InterfaceException(ResponseCodeEnum.LOGIN_PWD_INCORRECT);
         }
 
         // 更新用户信息，并清空之前失败的次数
-        user.setLoginFailCnt(webUserProperties.getInitFailCount());
+        user.setLoginFailCount(webUserProperties.getInitFailCount());
         userMapper.updateById(user);
 
         // TODO：权限信息

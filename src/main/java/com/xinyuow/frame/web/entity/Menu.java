@@ -48,15 +48,15 @@ public class Menu implements Serializable {
     @TableField("name")
     private String name;
 
-    @Schema(description = "权限路径")
-    @TableField("url")
-    private String url;
+    @Schema(description = "前端菜单路由")
+    @TableField("path")
+    private String path;
 
-    @Schema(description = "授权(多个用逗号分隔，如：user:list,user:create)")
-    @TableField("perms")
-    private String perms;
+    @Schema(description = "授权编码; web:user:list")
+    @TableField("code")
+    private String code;
 
-    @Schema(description = "类型;0:目录 1:菜单")
+    @Schema(description = "类型;0:菜单 1:接口")
     @TableField("type")
     private Integer type;
 
@@ -68,7 +68,7 @@ public class Menu implements Serializable {
     @TableField("sort")
     private Integer sort;
 
-    @Schema(description = "菜单备注")
+    @Schema(description = "备注")
     @TableField("remark")
     private String remark;
 
