@@ -61,7 +61,7 @@ public class User implements Serializable {
     @TableField("login_fail_count")
     private Integer loginFailCount;
 
-    @Schema(description = "是否锁定;1:是 0:否")
+    @Schema(description = "是否锁定;0:否 1:是")
     @TableField("lock_flag")
     private Boolean lockFlag;
 
@@ -77,15 +77,7 @@ public class User implements Serializable {
     @TableField(value = "modify_date", fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime modifyDate;
 
-    @Schema(description = "是否删除;1:是 0:否")
+    @Schema(description = "是否删除;0:否 1:是")
     @TableField("del_flag")
     private Boolean delFlag;
-
-    /* ******************** 扩展属性 开始 **************************/
-
-    @Schema(name = "用户对应的角色信息集合 - 登录时查询使用", hidden = true)
-    @TableField(exist = false)
-    private List<Role> roles;
-
-    /* ******************** 扩展属性 结束 **************************/
 }

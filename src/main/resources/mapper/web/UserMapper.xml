@@ -16,4 +16,15 @@
         <result column="modify_date" property="modifyDate"/>
         <result column="del_flag" property="delFlag"/>
     </resultMap>
+
+    <!-- 查询用户列表 - 分页 -->
+    <select id="getPageList" resultType="com.xinyuow.frame.web.vo.res.UserResVO">
+        SELECT id, login_name AS loginName, username, status, lock_flag AS lockFlag, create_date AS createDate
+        FROM s_user
+        WHERE del_flag = 0
+        <if test="username != null and username != ''">
+            AND username = #{username}
+        </if>
+        ORDER BY create_date DESC
+    </select>
 </mapper>
