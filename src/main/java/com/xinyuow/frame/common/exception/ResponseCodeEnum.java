@@ -43,7 +43,7 @@ public enum ResponseCodeEnum {
     LOGIN_NOT_EXISTS("2002", "账户不存在", 2),
     LOGIN_PWD_INCORRECT("2003", "账户或密码不正确", 2),
     CAPTCHA_INCORRECT("2004", "验证码不正确", 2),
-    NOT_LOGIN_ERROR("2005", "重新登录", 2),
+    NOT_LOGIN_ERROR("2005", "请重新登录", 2),
     OLD_PASSWORD_INCORRECT("2006", "旧密码不正确", 2),
     ACCOUNT_HAS_BEEN_DISABLED("2007", "此账号已被禁用", 2),
     ACCOUNT_IS_LOCKED("2008", "此账号已被锁定，请稍后再试", 2),

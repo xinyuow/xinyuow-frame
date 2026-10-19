@@ -12,11 +12,4 @@
         <result column="create_date" property="createDate" />
         <result column="modify_date" property="modifyDate" />
     </resultMap>
-
-    <select id="getById" resultMap="BaseResultMap" parameterType="java.lang.Long">
-        SELECT
-            id, role_name, role_code, status, role_type, create_date, modify_date
-        FROM s_role R
-        WHERE R.id = #{id}
-    </select>
 </mapper>

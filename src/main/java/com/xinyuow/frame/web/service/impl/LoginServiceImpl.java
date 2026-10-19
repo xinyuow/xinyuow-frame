@@ -11,16 +11,23 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.spring.service.impl.ServiceImpl;
 import com.xinyuow.frame.common.component.WebCaptchaComponent;
+import com.xinyuow.frame.common.component.WebJwtComponent;
+import com.xinyuow.frame.common.constant.JwtConstant;
 import com.xinyuow.frame.common.enums.DelFlagEnum;
+import com.xinyuow.frame.common.enums.MenuTypeEnum;
 import com.xinyuow.frame.common.enums.StatusEnum;
 import com.xinyuow.frame.common.exception.InterfaceException;
 import com.xinyuow.frame.common.exception.ResponseCodeEnum;
 import com.xinyuow.frame.common.properties.WebUserProperties;
+import com.xinyuow.frame.common.security.WebJwtSession;
 import com.xinyuow.frame.web.dto.WebCaptchaDTO;
+import com.xinyuow.frame.web.entity.Menu;
 import com.xinyuow.frame.web.entity.User;
+import com.xinyuow.frame.web.mapper.MenuMapper;
 import com.xinyuow.frame.web.mapper.UserMapper;
 import com.xinyuow.frame.web.service.LoginService;
 import com.xinyuow.frame.web.vo.res.WebCaptchaResVO;
+import com.xinyuow.frame.web.vo.res.WebLoginMenuResVO;
 import com.xinyuow.frame.web.vo.res.WebLoginResVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +35,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Web端登录业务实现类
@@ -41,8 +50,10 @@ import java.time.LocalDateTime;
 public class LoginServiceImpl extends ServiceImpl<UserMapper, User> implements LoginService {
 
     private final UserMapper userMapper;
+    private final MenuMapper menuMapper;
     private final WebUserProperties webUserProperties;
     private final WebCaptchaComponent webCaptchaComponent;
+    private final WebJwtComponent webJwtComponent;
     private final PasswordEncoder passwordEncoder;
 
     /**
@@ -70,12 +81,63 @@ public class LoginServiceImpl extends ServiceImpl<UserMapper, User> implements L
      */
     @Override
     public WebLoginResVO login(String loginName, String password, String captchaKey, String captchaCode) {
+        // 验证用户信息
+        User user = this.verifyUser(loginName, password, captchaKey, captchaCode);
+        // 查询用户权限集合
+        List<Menu> menuList = menuMapper.findOrdinaryMenu(user.getId());
+
+        // 处理用户权限信息
+        List<WebLoginMenuResVO> resMenuList = new ArrayList<>();
+        List<String> permissionList = new ArrayList<>();
+        for (Menu menu : menuList) {
+            if (MenuTypeEnum.MENU.getValue().equals(menu.getType())) {
+                resMenuList.add(WebLoginMenuResVO.builder()
+                        .id(menu.getId())
+                        .parentId(menu.getParentId())
+                        .name(menu.getName())
+                        .path(menu.getPath())
+                        .type(menu.getType())
+                        .icon(menu.getIcon())
+                        .sort(menu.getSort())
+                        .build());
+            } else if (MenuTypeEnum.API.getValue().equals(menu.getType())) {
+                permissionList.add(menu.getCode());
+            }
+        }
+
+        // 签发JWT并保存会话
+        WebJwtSession session = webJwtComponent.create(user.getId());
+        // 保存用户的接口权限到Redis
+        webJwtComponent.savePermissions(user.getId(), permissionList);
+
+        // 返回登录结果结果
+        long expiresIn = Math.max((session.getExpiresAt() - System.currentTimeMillis()) / 1000, 0);
+        return WebLoginResVO.builder()
+                .token(session.getToken())
+                .tokenType(JwtConstant.JWT_TOKEN_TYPE)
+                .expiresIn(expiresIn)
+                .userId(session.getUserId())
+                .username(user.getUsername())
+                .menuList(resMenuList)
+                .build();
+    }
+
+    /**
+     * 登录时验证用户信息 - 私有方法
+     *
+     * @param loginName   登录账号
+     * @param password    登录密码
+     * @param captchaKey  验证码标识
+     * @param captchaCode 用户输入的验证码
+     * @return 用户对象
+     */
+    private User verifyUser(String loginName, String password, String captchaKey, String captchaCode) {
         if (StrUtil.isBlank(loginName)) {
             throw new InterfaceException(ResponseCodeEnum.LOGIN_PWD_INCORRECT);
         }
 
         // 判断验证码
-        if (!webCaptchaComponent.verify(captchaKey, captchaCode)){
+        if (!webCaptchaComponent.verify(captchaKey, captchaCode)) {
             throw new InterfaceException(ResponseCodeEnum.CAPTCHA_INCORRECT);
         }
 
@@ -126,9 +188,6 @@ public class LoginServiceImpl extends ServiceImpl<UserMapper, User> implements L
         user.setLoginFailCount(webUserProperties.getInitFailCount());
         userMapper.updateById(user);
 
-        // TODO：权限信息
-        // TODO：签发JWT
-        // TODO：返回登录结果结果
-        return null;
+        return user;
     }
 }

@@ -8,6 +8,7 @@
 package com.xinyuow.frame.common.component;
 
 import com.alibaba.fastjson2.JSON;
+import com.xinyuow.frame.common.constant.JwtConstant;
 import com.xinyuow.frame.common.enums.ClientEnum;
 import com.xinyuow.frame.common.exception.InterfaceException;
 import com.xinyuow.frame.common.exception.ResponseCodeEnum;
@@ -62,8 +63,8 @@ public class AppJwtComponent {
                 .issuer(jwtProperties.getIssuer())
                 .subject(String.valueOf(userId))
                 .id(jti)
-                .claim("phone", phone)
-                .claim("clientType", ClientEnum.APP.name())
+                .claim(JwtConstant.JWT_CLAIM_APP_PHONE, phone)
+                .claim(JwtConstant.JWT_CLAIM_CLIENT_TYPE, ClientEnum.APP.name())
                 .issuedAt(Instant.ofEpochMilli(now))
                 .expiresAt(Instant.ofEpochMilli(expiresAt))
                 .build();
@@ -111,8 +112,8 @@ public class AppJwtComponent {
                 .issuer(jwtProperties.getIssuer())
                 .subject(String.valueOf(oldSession.getUserId()))
                 .id(newJti)
-                .claim("phone", oldSession.getPhone())
-                .claim("clientType", ClientEnum.APP.name())
+                .claim(JwtConstant.JWT_CLAIM_APP_PHONE, oldSession.getPhone())
+                .claim(JwtConstant.JWT_CLAIM_CLIENT_TYPE, ClientEnum.APP.name())
                 .issuedAt(Instant.ofEpochMilli(now))
                 .expiresAt(Instant.ofEpochMilli(expiresAt))
                 .build();
@@ -225,17 +226,34 @@ public class AppJwtComponent {
             throw new InterfaceException(ResponseCodeEnum.APP_USER_NOT_LOGIN);
         }
 
-        // 从JWT中获取手机号和JTI
-        Jwt jwt = jwtAuthenticationToken.getToken();
-        String phone = jwt.getClaimAsString("phone");
+        // 从JWT中获取APP的JWT会话
+        return this.get(jwtAuthenticationToken.getToken());
+    }
+
+    /**
+     * 从JWT中获取APP的JWT会话
+     *
+     * @param jwt JWT
+     * @return JWT会话
+     */
+    public AppJwtSession get(Jwt jwt){
+        // 防止WEB JWT被当作APP JWT使用
+        if (!ClientEnum.APP.name().equals(jwt.getClaimAsString(JwtConstant.JWT_CLAIM_CLIENT_TYPE))) {
+            log.error("\r\n ********* WEB JWT【{}】被当作APP JWT使用。*********", jwt);
+            throw new InterfaceException(ResponseCodeEnum.APP_USER_NOT_LOGIN);
+        }
+
+        String phone = jwt.getClaimAsString(JwtConstant.JWT_CLAIM_APP_PHONE);
         String jti = jwt.getId();
         if (phone == null || phone.isBlank() || jti == null || jti.isBlank()) {
+            log.error("\r\n ********* APP JWT【{}】中没有用户手机号码或JTI。*********", jwt);
             throw new InterfaceException(ResponseCodeEnum.APP_USER_NOT_LOGIN);
         }
 
         // 获取JWT会话
         AppJwtSession session = this.get(phone, jti);
         if (session == null) {
+            log.error("\r\n ********* APP JWT【{}】的会话不存在。*********", jwt);
             throw new InterfaceException(ResponseCodeEnum.APP_USER_NOT_LOGIN);
         }
         return session;

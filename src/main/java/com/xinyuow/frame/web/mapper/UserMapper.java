@@ -9,7 +9,6 @@ package com.xinyuow.frame.web.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.xinyuow.frame.web.entity.User;
-import org.apache.ibatis.annotations.Param;
 
 /**
  * 用户表 Mapper接口
@@ -19,11 +18,4 @@ import org.apache.ibatis.annotations.Param;
  */
 public interface UserMapper extends BaseMapper<User> {
 
-    /**
-     * 查询用户并级联查询用户角色
-     *
-     * @param userId 用户ID
-     * @return 用户对象
-     */
-    User getUserCascadeRole(@Param("userId") Long userId);
 }

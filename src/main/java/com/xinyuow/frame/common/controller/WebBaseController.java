@@ -8,7 +8,11 @@
 package com.xinyuow.frame.common.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.xinyuow.frame.common.component.WebJwtComponent;
+import com.xinyuow.frame.common.security.WebJwtSession;
+import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.Serial;
 
@@ -18,10 +22,13 @@ import java.io.Serial;
  * @author xinyuow
  * @date 2026-10-17
  */
+@Slf4j
 public abstract class WebBaseController extends BaseController {
     @Serial
     private static final long serialVersionUID = 624841049563451448L;
 
+    @Resource
+    private WebJwtComponent webJwtComponent;
     protected HttpServletRequest request;
 
     /**
@@ -65,4 +72,23 @@ public abstract class WebBaseController extends BaseController {
 
         return new Page<>(pageNumber, pageSize);
     }
+
+    /**
+     * 获取当前登录的JWT会话
+     *
+     * @return 当前JWT会话
+     */
+    protected WebJwtSession getCurrentJwtSession() {
+        return webJwtComponent.getCurrentSession();
+    }
+
+    /**
+     * 获取当前登录的用户ID
+     *
+     * @return 登录用户ID
+     */
+    protected Long getCurrentUserId() {
+        return this.getCurrentJwtSession().getUserId();
+    }
+
 }

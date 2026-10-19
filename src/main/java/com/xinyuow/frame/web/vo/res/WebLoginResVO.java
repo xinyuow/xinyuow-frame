@@ -49,6 +49,6 @@ public class WebLoginResVO implements Serializable {
     @Schema(description = "用户名称")
     private String username;
 
-    @Schema(description = "权限标识列表")
-    private List<String> permissions;
+    @Schema(description = "菜单列表")
+    private List<WebLoginMenuResVO> menuList;
 }
