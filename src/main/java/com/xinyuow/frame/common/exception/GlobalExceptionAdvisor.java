@@ -12,6 +12,8 @@ import org.springframework.beans.ConversionNotSupportedException;
 import org.springframework.http.converter.HttpMessageConversionException;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.HttpMessageNotWritableException;
+import org.springframework.security.authorization.AuthorizationDeniedException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.HttpMediaTypeNotAcceptableException;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
@@ -144,6 +146,34 @@ public class GlobalExceptionAdvisor {
 
         map.put(RESPONSE_CODE, exception.getErrorCode());
         map.put(RESPONSE_MSG, exception.getErrorMsg());
+        return map;
+    }
+
+    /**
+     * 捕获Spring Security Token认证失败异常
+     *
+     * @param exception Token认证失败异常
+     * @return 返回的异常信息map
+     */
+    @ExceptionHandler(AuthenticationException.class)
+    public Object handleAuthenticationException(AuthenticationException exception) {
+        log.error("\r\n ********* Token认证失败异常，异常信息：{}", exception.getMessage());
+        Map<String, Object> map = new HashMap<>(16);
+        addResCodeToMap(ResponseCodeEnum.NOT_LOGIN_ERROR, map);
+        return map;
+    }
+
+    /**
+     * 捕获Spring Security无权限异常
+     *
+     * @param exception 无权限异常
+     * @return 返回的异常信息map
+     */
+    @ExceptionHandler(AuthorizationDeniedException.class)
+    public Object handleAuthorizationDeniedException(AuthorizationDeniedException exception) {
+        log.error("\r\n ********* 无权限异常，异常信息：{}", exception.getMessage());
+        Map<String, Object> map = new HashMap<>(16);
+        addResCodeToMap(ResponseCodeEnum.UNAUTHORIZED, map);
         return map;
     }
 

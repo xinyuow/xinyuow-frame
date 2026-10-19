@@ -27,6 +27,7 @@
 
         <druid.version>1.2.28</druid.version>
         <fastjson2.version>2.0.60</fastjson2.version>
+        <fastjson2-extension-spring6.version>2.0.61</fastjson2-extension-spring6.version>
         <springdoc-openapi.version>3.1.1</springdoc-openapi.version>
         <hutool.version>5.8.41</hutool.version>
         <mysql-connector-j.version>26.7.0</mysql-connector-j.version>
@@ -153,6 +154,12 @@
             <groupId>com.alibaba.fastjson2</groupId>
             <artifactId>fastjson2</artifactId>
             <version>${fastjson2.version}</version>
+        </dependency>
+        <!-- Fastjson2 Spring 6 集成 -->
+        <dependency>
+            <groupId>com.alibaba.fastjson2</groupId>
+            <artifactId>fastjson2-extension-spring6</artifactId>
+            <version>${fastjson2-extension-spring6.version}</version>
         </dependency>
 
         <!-- Lombok -->

@@ -23,7 +23,7 @@
         FROM s_user
         WHERE del_flag = 0
         <if test="username != null and username != ''">
-            AND username = #{username}
+            AND username LIKE CONCAT('%', #{username}, '%')
         </if>
         ORDER BY create_date DESC
     </select>

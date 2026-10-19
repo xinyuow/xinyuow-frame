@@ -36,12 +36,12 @@ public class PageReqVO implements Serializable {
 
     @NotNull(message = "页码不能为空")
     @Min(value = 1, message = "页码必须大于0")
-    @Schema(name = "页码", description = "从1开始，默认为起始页(第一页)", example = "1")
+    @Schema(description = "页码，从1开始，默认为起始页(第一页)", example = "1")
     private Integer pageNum = 1;
 
     @NotNull(message = "页码不能为空")
     @Min(value = 1, message = "每页条数必须大于0")
     @Max(value = 100, message = "每页最多查询100条")
-    @Schema(name = "每页条数", description = "默认为10", example = "10")
+    @Schema(description = "每页条数，默认为10", example = "10")
     private Integer pageSize = 10;
 }

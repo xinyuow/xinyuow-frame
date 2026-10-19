@@ -35,6 +35,6 @@ public class UserListQueryReqVO extends PageReqVO {
     private static final long serialVersionUID = -7093364777405258612L;
 
     @Size(max = 50, message = "用户名称不能超过50个字符")
-    @Schema(name = "用户名称", description = "用户名称")
+    @Schema(description = "用户名称")
     private String username;
 }

@@ -7,13 +7,28 @@
  */
 package com.xinyuow.frame.common.config;
 
+import cn.hutool.core.date.DatePattern;
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONWriter;
+import com.alibaba.fastjson2.support.config.FastJsonConfig;
+import com.alibaba.fastjson2.support.spring6.http.converter.FastJsonHttpMessageConverter;
+import com.alibaba.fastjson2.writer.ObjectWriter;
+import com.alibaba.fastjson2.writer.ObjectWriters;
+import org.springframework.boot.http.converter.autoconfigure.ServerHttpMessageConvertersCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.MediaType;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 /**
  * MVC配置
@@ -52,5 +67,52 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
         // 放行项目icon
         registry.addResourceHandler("/favicon.ico")
                 .addResourceLocations("classpath:/static/");
+    }
+
+    /**
+     * 配置消息转换器
+     * 使用Ali开源的FastJson替换默认的Jackson
+     */
+    @Bean
+    public ServerHttpMessageConvertersCustomizer fastJsonCustomizer() {
+        FastJsonHttpMessageConverter converter = new FastJsonHttpMessageConverter();
+
+        FastJsonConfig config = new FastJsonConfig();
+        config.setCharset(StandardCharsets.UTF_8);
+        config.setDateFormat(DatePattern.NORM_DATETIME_PATTERN);
+        config.setWriterFeatures(
+                // JSON 格式化
+                JSONWriter.Feature.PrettyFormat,
+                // 输出 null 字段
+                // JSONWriter.Feature.WriteNulls,
+                // 将值为 null 的字段按照字段类型，输出为对应的默认值
+                JSONWriter.Feature.NullAsDefaultValue,
+                // String 为 null 时输出 ""
+                JSONWriter.Feature.WriteNullStringAsEmpty,
+                // List 为 null 时输出 []
+                JSONWriter.Feature.WriteNullListAsEmpty
+        );
+
+        // Long、long 转字符串
+        JSON.register(Long.class, ObjectWriters.ofToString(Object::toString));
+        JSON.register(Long.TYPE, ObjectWriters.ofToString(Object::toString));
+        // BigInteger 转字符串
+        JSON.register(BigInteger.class, ObjectWriters.ofToString(Object::toString));
+        // LocalDateTime 格式化
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DatePattern.NORM_DATETIME_PATTERN);
+        JSON.register(LocalDateTime.class, (ObjectWriter<LocalDateTime>) (jsonWriter, object, fieldName, fieldType, features) -> {
+            if (object == null) {
+                jsonWriter.writeNull();
+                return;
+            }
+            LocalDateTime dateTime = (LocalDateTime) object;
+            jsonWriter.writeString(formatter.format(dateTime));
+        });
+
+        converter.setFastJsonConfig(config);
+        converter.setSupportedMediaTypes(
+                List.of(MediaType.APPLICATION_JSON)
+        );
+        return builder -> builder.withJsonConverter(converter);
     }
 }

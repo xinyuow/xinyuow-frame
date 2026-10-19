@@ -62,4 +62,8 @@ public class WebLoginController extends WebBaseController {
         return getResult(loginService.login(loginReq.getLoginName(), loginReq.getPassword(),
                 loginReq.getCaptchaKey(), loginReq.getCaptchaCode()));
     }
+
+    // TODO：退出登录
+
+    // TODO：登录错误返回
 }

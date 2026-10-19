@@ -4,7 +4,7 @@ CREATE TABLE `s_user`
 (
     `id`               bigint   NOT NULL COMMENT '主键ID',
     `login_name`       varchar(50) DEFAULT NULL COMMENT '登录名称',
-    `login_password`   varchar(50) DEFAULT NULL COMMENT '登录密码',
+    `login_password`   varchar(256) DEFAULT NULL COMMENT '登录密码',
     `username`         varchar(50) DEFAULT NULL COMMENT '用户名称',
     `status`           int         DEFAULT '0' COMMENT '用户状态;0:启动 1:禁用',
     `login_fail_count` int         DEFAULT '0' COMMENT '登录失败次数',
@@ -18,10 +18,10 @@ CREATE TABLE `s_user`
 
 -- 初始化用户表的基础信息
 INSERT INTO `s_user`
-VALUES ('1', 'superadmin', '超级管理员', 'e10adc3949ba59abbe56e057f20f883e', '0', '0', '0', '2026-10-19 17:21:00',
-        '2026-10-19 17:21:00', '2026-10-19 17:21:00', '0'),
-       ('2', 'xinyuow', '普通人员', 'e10adc3949ba59abbe56e057f20f883e', '0', '0', '0', '2026-10-19 17:21:00',
-        '2026-10-19 17:21:00', '2026-10-19 17:21:00', '0');
+VALUES ('1', 'superadmin', '{bcrypt}$2a$10$8nnFZA2AANCgcxsFmM5vIe8CFscoA8pTzdlCmU.G6jSJI.sm43B1a', '超级管理员', '0',
+        '0', '0', '2026-10-19 17:21:00', '2026-10-19 17:21:00', '2026-10-19 17:21:00', '0'),
+       ('2', 'xinyuow', '{bcrypt}$2a$10$sCCLMzuVwL3uwqoXw66CtOY56H/cv63BVI6qdIGDrxtQKkGU4ZF.2', '普通人员', '0', '0',
+        '0', '2026-10-19 17:21:00', '2026-10-19 17:21:00', '2026-10-19 17:21:00', '0');
 
 
 -- 角色表
