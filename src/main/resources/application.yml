@@ -75,3 +75,19 @@ xinyuow:
         index-all-key: "xinyuow-frame:app:index:*"
         # JWT过期时间, 默认2小时
         expiration: 2h
+  web:
+    login:
+      captcha:
+        width: 120
+        height: 40
+        codeCount: 4
+        lineCount: 50
+        redis-key: "xinyuow-frame:web:login:captcha:%s"
+        redis-expiration: 5m
+    user:
+      # 初始登录失败次数
+      init-fail-count: 0
+      # 最大登录失败次数
+      max-fail-count: 5
+      # 锁定时间，单位：分钟
+      lock-time: 10m

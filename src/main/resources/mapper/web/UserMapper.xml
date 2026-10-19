@@ -46,14 +46,6 @@
         U.locked_date, U.create_date, U.modify_date, U.del_flag
     </sql>
 
-    <!-- 根据登录名称查询用户 -->
-    <select id="getByLoginName" resultMap="BaseResultMap">
-        SELECT
-        <include refid="Base_Column_List"/>
-        FROM s_user U
-        WHERE U.login_name = #{loginName}
-    </select>
-
     <!-- 查询用户并级联查询用户角色 -->
     <select id="getUserCascadeRole" resultMap="joinUserMap" parameterType="java.lang.Long">
         SELECT

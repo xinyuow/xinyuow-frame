@@ -20,14 +20,6 @@ import org.apache.ibatis.annotations.Param;
 public interface UserMapper extends BaseMapper<User> {
 
     /**
-     * 根据登录名称查询用户
-     *
-     * @param loginName 登录名称
-     * @return 用户对象
-     */
-    User getByLoginName(@Param("loginName") String loginName);
-
-    /**
      * 查询用户并级联查询用户角色
      *
      * @param userId 用户ID

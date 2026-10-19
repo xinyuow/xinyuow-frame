@@ -55,7 +55,11 @@ public class SecurityConfig {
                     }
 
                     // 放行指定接口
-                    auth.requestMatchers("/api/health").permitAll();
+                    auth.requestMatchers(
+                            "/api/health",
+                            "/api/web/v1/captcha",
+                            "/api/web/v1/login"
+                    ).permitAll();
 
                     // 其他接口必须认证
                     auth.anyRequest().authenticated();
