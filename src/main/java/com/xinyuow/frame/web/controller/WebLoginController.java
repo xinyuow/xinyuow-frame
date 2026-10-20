@@ -63,7 +63,17 @@ public class WebLoginController extends WebBaseController {
                 loginReq.getCaptchaKey(), loginReq.getCaptchaCode()));
     }
 
-    // TODO：退出登录
+    /**
+     * 退出登录
+     *
+     * @return 操作结果
+     */
+    @GetMapping("/logout")
+    @Operation(summary = "退出登录", description = "Web端用户退出登录接口")
+    public ResponseInfo<Object> logout() {
+        loginService.logout(getCurrentUserId());
+        return getSuccessResult();
+    }
 
     // TODO：登录错误返回
 }

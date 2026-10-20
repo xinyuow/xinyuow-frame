@@ -201,7 +201,7 @@ public class WebJwtComponent {
     }
 
     /**
-     * 删除指定用户全部JWT会话
+     * 删除指定用户全部JWT会话以及用户权限缓存
      *
      * @param userId 用户ID
      */
@@ -214,6 +214,7 @@ public class WebJwtComponent {
             }
         }
         redisComponent.delete(indexKey);
+        this.removePermissions(userId);
     }
 
     /**

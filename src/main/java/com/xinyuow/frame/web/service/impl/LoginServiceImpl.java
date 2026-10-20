@@ -123,6 +123,16 @@ public class LoginServiceImpl extends ServiceImpl<UserMapper, User> implements L
     }
 
     /**
+     * 退出登录
+     *
+     * @param userId 当前登录用户ID
+     */
+    @Override
+    public void logout(Long userId) {
+        webJwtComponent.remove(userId);
+    }
+
+    /**
      * 登录时验证用户信息 - 私有方法
      *
      * @param loginName   登录账号

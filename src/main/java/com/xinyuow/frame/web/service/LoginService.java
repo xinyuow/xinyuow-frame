@@ -37,4 +37,11 @@ public interface LoginService extends IService<User> {
      * @return 登录结果VO对象
      */
     WebLoginResVO login(String loginName, String password, String captchaKey, String captchaCode);
+
+    /**
+     * 退出登录
+     *
+     * @param userId 当前登录用户ID
+     */
+    void logout(Long userId);
 }
