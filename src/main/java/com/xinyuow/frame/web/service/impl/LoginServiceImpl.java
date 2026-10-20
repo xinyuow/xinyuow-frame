@@ -105,10 +105,8 @@ public class LoginServiceImpl extends ServiceImpl<UserMapper, User> implements L
             }
         }
 
-        // 签发JWT并保存会话
-        WebJwtSession session = webJwtComponent.create(user.getId());
-        // 保存用户的接口权限到Redis
-        webJwtComponent.savePermissions(user.getId(), permissionList);
+        // 签发JWT并保存用户会话
+        WebJwtSession session = webJwtComponent.create(user.getId(), permissionList);
 
         // 返回登录结果结果
         long expiresIn = Math.max((session.getExpiresAt() - System.currentTimeMillis()) / 1000, 0);
@@ -126,10 +124,11 @@ public class LoginServiceImpl extends ServiceImpl<UserMapper, User> implements L
      * 退出登录
      *
      * @param userId 当前登录用户ID
+     * @param jti    当前登录用户的JWT唯一ID
      */
     @Override
-    public void logout(Long userId) {
-        webJwtComponent.remove(userId);
+    public void logout(Long userId, String jti) {
+        webJwtComponent.remove(userId, jti);
     }
 
     /**

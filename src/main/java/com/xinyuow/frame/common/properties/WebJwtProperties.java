@@ -25,23 +25,17 @@ import java.time.Duration;
 public class WebJwtProperties {
 
     /**
-     * JWT会话键
+     * JWT会话键(key-value类型)
      * 第一个参数：用户ID
      * 第二个参数：jti
      */
     private String sessionKey;
 
     /**
-     * JWT会话索引键
+     * JWT会话索引键(set类型)
      * 参数：用户ID
      */
     private String indexKey;
-
-    /**
-     * 接口权限键
-     * 参数：用户ID
-     */
-    private String permissionKey;
 
     /**
      * JWT过期时间

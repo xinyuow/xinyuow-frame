@@ -9,6 +9,7 @@ package com.xinyuow.frame.web.controller;
 
 import com.xinyuow.frame.common.controller.WebBaseController;
 import com.xinyuow.frame.common.model.ResponseInfo;
+import com.xinyuow.frame.common.security.WebJwtSession;
 import com.xinyuow.frame.web.service.LoginService;
 import com.xinyuow.frame.web.vo.req.WebLoginReqVO;
 import com.xinyuow.frame.web.vo.res.WebCaptchaResVO;
@@ -71,7 +72,8 @@ public class WebLoginController extends WebBaseController {
     @GetMapping("/logout")
     @Operation(summary = "退出登录", description = "Web端用户退出登录接口")
     public ResponseInfo<Object> logout() {
-        loginService.logout(getCurrentUserId());
+        WebJwtSession session = super.getCurrentJwtSession();
+        loginService.logout(session.getUserId(), session.getJti());
         return getSuccessResult();
     }
 

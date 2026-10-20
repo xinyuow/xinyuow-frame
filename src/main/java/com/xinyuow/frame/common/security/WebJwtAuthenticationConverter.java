@@ -36,11 +36,8 @@ public class WebJwtAuthenticationConverter implements Converter<Jwt, JwtAuthenti
         // 从JWT中获取Web的JWT会话
         WebJwtSession session = webJwtComponent.get(jwt);
 
-        // 从Redis获取当前用户的接口权限
-        List<String> permissions = webJwtComponent.getPermissions(session.getUserId());
-
         // 将权限字符串转换为Spring Security权限对象
-        List<GrantedAuthority> authorities = permissions.stream()
+        List<GrantedAuthority> authorities = session.getPermissionList().stream()
                 .map(SimpleGrantedAuthority::new)
                 .map(GrantedAuthority.class::cast)
                 .toList();

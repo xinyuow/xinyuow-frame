@@ -49,16 +49,18 @@ public class WebJwtComponent {
     /**
      * 创建JWT会话
      *
-     * @param userId 用户ID
+     * @param userId         用户ID
+     * @param permissionList 用户拥有的接口权限列表
      * @return JWT会话
      */
-    public WebJwtSession create(Long userId) {
+    public WebJwtSession create(Long userId, List<String> permissionList) {
         // 计算JWT有效时间
         long now = System.currentTimeMillis();
         long expiresAt = now + jwtProperties.getExpiration().toMillis();
 
+        // 生成JWT的唯一ID
         String jti = UUID.randomUUID().toString();
-        // 构建JWT声明
+        // 构建JWT声明，用于返回给客户端进行后续认证
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .issuer(jwtProperties.getIssuer())
                 .subject(String.valueOf(userId))
@@ -71,7 +73,7 @@ public class WebJwtComponent {
         // 生成JWT，使用HS256对JWT进行签名
         Jwt jwt = jwtEncoder.encode(JwtEncoderParameters.from(JwsHeader.with(MacAlgorithm.HS256).build(), claims));
 
-        // 构造JWT会话
+        // 构造JWT用户会话
         WebJwtSession session = WebJwtSession.builder()
                 .userId(userId)
                 .jti(jti)
@@ -80,15 +82,16 @@ public class WebJwtComponent {
                 .issuedAt(now)
                 .expiresAt(expiresAt)
                 .loginTime(now)
+                .permissionList(permissionList)
                 .build();
 
-        // 保存JWT会话到Redis
+        // 保存JWT用户会话到Redis
         this.save(session);
         return session;
     }
 
     /**
-     * 判断JWT的会话是否存在
+     * 判断JWT用户会话是否存在
      *
      * @param userId 用户ID
      * @param jti    JWT的唯一ID
@@ -99,24 +102,24 @@ public class WebJwtComponent {
     }
 
     /**
-     * 查询JWT会话
+     * 查询JWT用户会话
      *
      * @param userId 用户ID
      * @param jti    JWT的唯一ID
-     * @return JWT会话
+     * @return JWT用户会话
      */
     public WebJwtSession get(Long userId, String jti) {
-        String value = redisComponent.get(this.buildSessionKey(userId, jti));
-        if (!StringUtils.hasText(value)) {
+        String session = redisComponent.get(this.buildSessionKey(userId, jti));
+        if (!StringUtils.hasText(session)) {
             return null;
         }
-        return JSON.parseObject(value, WebJwtSession.class);
+        return JSON.parseObject(session, WebJwtSession.class);
     }
 
     /**
-     * 获取当前登录的JWT会话
+     * 获取当前登录用户的JWT用户会话
      *
-     * @return JWT会话
+     * @return JWT用户会话
      */
     public WebJwtSession getCurrentSession() {
         // 获取当前请求的认证信息
@@ -124,16 +127,15 @@ public class WebJwtComponent {
         if (!(authentication instanceof JwtAuthenticationToken jwtAuthenticationToken)) {
             throw new InterfaceException(ResponseCodeEnum.NOT_LOGIN_ERROR);
         }
-
-        // 从JWT中获取Web的JWT会话
+        // 从JWT中获取Web的JWT用户会话
         return this.get(jwtAuthenticationToken.getToken());
     }
 
     /**
-     * 从JWT中获取Web的JWT会话
+     * 根据JWT获取JWT用户会话
      *
-     * @param jwt JWT
-     * @return JWT会话
+     * @param jwt JWT对象
+     * @return JWT用户会话
      */
     public WebJwtSession get(Jwt jwt) {
         // 防止APP JWT被当作WEB JWT使用
@@ -156,7 +158,7 @@ public class WebJwtComponent {
             throw new InterfaceException(ResponseCodeEnum.NOT_LOGIN_ERROR);
         }
 
-        // 获取JWT会话
+        // 获取JWT用户会话
         WebJwtSession session = this.get(userId, jti);
         if (session == null) {
             log.error("\r\n ********* WEB JWT【{}】的会话不存在。*********", jwt);
@@ -166,83 +168,81 @@ public class WebJwtComponent {
     }
 
     /**
-     * 保存用户的接口权限。在登录成功、角色权限变更时调用
-     *
-     * @param userId      用户ID
-     * @param permissions 接口权限集合
-     */
-    public void savePermissions(Long userId, List<String> permissions) {
-        redisComponent.set(this.buildPermissionKey(userId), JSON.toJSONString(permissions));
-    }
-
-    /**
-     * 获取用户的接口权限
-     *
-     * @param userId 用户ID
-     * @return 接口权限集合
-     */
-    public List<String> getPermissions(Long userId) {
-        String value = redisComponent.get(this.buildPermissionKey(userId));
-        if (!StringUtils.hasText(value)) {
-            return List.of();
-        }
-        return JSON.parseArray(value, String.class);
-    }
-
-    /**
-     * 删除指定JWT会话
+     * 删除指定JWT用户会话 - 用户退出登录时调用
      *
      * @param userId 用户ID
      * @param jti    JWT的唯一ID
      */
     public void remove(Long userId, String jti) {
+        // 删除指定JWT用户会话
         redisComponent.delete(this.buildSessionKey(userId, jti));
+        // 在用户会话索引中删除指定JTI
         redisComponent.setRemove(this.buildIndexKey(userId), jti);
     }
 
     /**
-     * 删除指定用户全部JWT会话以及用户权限缓存
+     * 删除指定用户全部JWT会话 - 踢用户下线时调用
      *
      * @param userId 用户ID
      */
     public void remove(Long userId) {
+        // 获取指定用户的所有JTI
         String indexKey = this.buildIndexKey(userId);
         Set<String> jtiSet = redisComponent.setMembers(indexKey);
         if (jtiSet != null) {
             for (String jti : jtiSet) {
+                // 删除指定JWT用户会话
                 redisComponent.delete(this.buildSessionKey(userId, jti));
             }
         }
+        // 删除用户会话索引
         redisComponent.delete(indexKey);
-        this.removePermissions(userId);
     }
 
     /**
-     * 删除指定用户接口权限缓存
+     * 更新用户的接口权限
+     * 仅在角色权限变更，不需要用户重新登录时调用。
+     * 但是不建议如此定义业务，因为角色变更后，前端展示的页面也需要更新。仅更新接口权限不满足业务变动需求。
      *
-     * @param userId 用户ID
+     * @param userId      用户ID
+     * @param permissions 接口权限集合
      */
-    public void removePermissions(Long userId) {
-        redisComponent.delete(this.buildPermissionKey(userId));
-    }
-
-    /**
-     * 保存JWT会话到Redis中 - 私有方法
-     *
-     * @param session JWT会话
-     */
-    private void save(WebJwtSession session) {
-        redisComponent.set(this.buildSessionKey(session.getUserId(), session.getJti()),
-                JSON.toJSONString(session), webJwtProperties.getExpiration()
-        );
-
-        if (0 == redisComponent.setAdd(this.buildIndexKey(session.getUserId()), session.getJti())) {
-            log.error("\r\n ********* 保存WEB JWT会话到Redis失败，会话信息：{}", JSON.toJSONString(session));
+    public void updatePermissions(Long userId, List<String> permissions) {
+        // 获取指定用户的所有JTI
+        String indexKey = this.buildIndexKey(userId);
+        Set<String> jtiSet = redisComponent.setMembers(indexKey);
+        if (jtiSet != null) {
+            for (String jti : jtiSet) {
+                WebJwtSession session = this.get(userId, jti);
+                if (null != session) {
+                    // 更新用户会话的接口权限
+                    session.setPermissionList(permissions);
+                    redisComponent.set(this.buildSessionKey(session.getUserId(), jti),
+                            JSON.toJSONString(session), webJwtProperties.getExpiration());
+                }
+            }
         }
     }
 
     /**
-     * 构建JWT会话键 - 私有方法
+     * 保存JWT用户会话到Redis中 - 私有方法
+     * 一个用户可多端登录，每次登录都有一个唯一的JTI
+     * 一个JTI对应一个用户会话，一个用户可有多个JTI
+     *
+     * @param session JWT用户会话
+     */
+    private void save(WebJwtSession session) {
+        // 保存本次登录的JWT会话到Redis中
+        redisComponent.set(this.buildSessionKey(session.getUserId(), session.getJti()),
+                JSON.toJSONString(session), webJwtProperties.getExpiration());
+
+        // 将登录后的JWT会话添加到用户会话索引中。每一个用户可以多端登录，所以需要添加到索引中，方便后续删除
+        redisComponent.setAdd(this.buildIndexKey(session.getUserId()), session.getJti());
+    }
+
+    /**
+     * 构建JWT用户会话键 - 私有方法
+     * Key-Value类型
      *
      * @param userId 用户ID
      * @param jti    JWT的唯一ID
@@ -253,22 +253,13 @@ public class WebJwtComponent {
     }
 
     /**
-     * 构建JWT会话索引键 - 私有方法
+     * 构建JWT用户会话索引键 - 私有方法
+     * Set类型
      *
      * @param userId 用户ID
      * @return Redis Key
      */
     private String buildIndexKey(Long userId) {
         return String.format(webJwtProperties.getIndexKey(), userId);
-    }
-
-    /**
-     * 构建接口权限键 - 私有方法
-     *
-     * @param userId 用户ID
-     * @return Redis Key
-     */
-    private String buildPermissionKey(Long userId) {
-        return String.format(webJwtProperties.getPermissionKey(), userId);
     }
 }

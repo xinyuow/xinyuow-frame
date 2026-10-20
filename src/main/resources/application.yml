@@ -79,10 +79,8 @@ xinyuow:
       jwt:
         # JWT会话键 - 用户ID+JTI
         session-key: "xinyuow-frame:web:jwt:%s:%s"
-        # JWT会话索引键 - 用户ID
+        # JWT会话索引键(set类型) - 用户ID
         index-key: "xinyuow-frame:web:index:%s"
-        # 接口权限键 - 用户ID
-        permission-key: "xinyuow-frame:web:permission:%s"
         # JWT过期时间，默认2小时
         expiration: 2h
   web:

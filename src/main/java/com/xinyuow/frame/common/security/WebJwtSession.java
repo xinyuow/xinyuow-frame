@@ -14,9 +14,10 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.List;
 
 /**
- * Web的JWT会话
+ * Web的JWT会话 - 存在服务端的Redis中
  *
  * @author xinyuow
  * @date 2026-10-19
@@ -63,4 +64,9 @@ public class WebJwtSession implements Serializable {
      * 登录时间
      */
     private Long loginTime;
+
+    /**
+     * 用户拥有的接口权限列表
+     */
+    private List<String> permissionList;
 }

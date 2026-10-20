@@ -42,6 +42,7 @@ public interface LoginService extends IService<User> {
      * 退出登录
      *
      * @param userId 当前登录用户ID
+     * @param jti    当前登录用户的JWT唯一ID
      */
-    void logout(Long userId);
+    void logout(Long userId, String jti);
 }
