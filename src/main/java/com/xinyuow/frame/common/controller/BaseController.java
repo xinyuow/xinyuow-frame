@@ -7,6 +7,7 @@
  */
 package com.xinyuow.frame.common.controller;
 
+import cn.hutool.core.date.DateUtil;
 import com.xinyuow.frame.common.exception.ResponseCodeEnum;
 import com.xinyuow.frame.common.model.ResponseInfo;
 
@@ -31,7 +32,7 @@ public abstract class BaseController implements Serializable {
      */
     protected <T> ResponseInfo<T> getResult(T body) {
         return ResponseInfo.<T>builder().code(ResponseCodeEnum.REQUEST_SUCCESS.getCode())
-                .msg(ResponseCodeEnum.REQUEST_SUCCESS.getMsg()).body(body).build();
+                .msg(ResponseCodeEnum.REQUEST_SUCCESS.getMsg()).timestamp(DateUtil.current()).body(body).build();
     }
 
     /**
@@ -41,7 +42,7 @@ public abstract class BaseController implements Serializable {
      */
     protected <T> ResponseInfo<T> getSuccessResult() {
         return ResponseInfo.<T>builder().code(ResponseCodeEnum.REQUEST_SUCCESS.getCode())
-                .msg(ResponseCodeEnum.REQUEST_SUCCESS.getMsg()).build();
+                .msg(ResponseCodeEnum.REQUEST_SUCCESS.getMsg()).timestamp(DateUtil.current()).build();
     }
 
     /**
@@ -51,7 +52,8 @@ public abstract class BaseController implements Serializable {
      * @return 接口响应对象
      */
     protected <T> ResponseInfo<T> getFailResult(ResponseCodeEnum responseCodeEnum) {
-        return ResponseInfo.<T>builder().code(responseCodeEnum.getCode()).msg(responseCodeEnum.getMsg()).build();
+        return ResponseInfo.<T>builder().code(responseCodeEnum.getCode()).msg(responseCodeEnum.getMsg())
+                .timestamp(DateUtil.current()).build();
     }
 
     /**
@@ -61,8 +63,8 @@ public abstract class BaseController implements Serializable {
      * @param msg  失败原因
      * @return 接口响应对象
      */
-    protected <T> ResponseInfo<T> getFailResult(String code, String msg) {
-        return ResponseInfo.<T>builder().code(code).msg(msg).build();
+    protected <T> ResponseInfo<T> getFailResult(Integer code, String msg) {
+        return ResponseInfo.<T>builder().code(code).msg(msg).timestamp(DateUtil.current()).build();
     }
 
     /**
@@ -72,6 +74,6 @@ public abstract class BaseController implements Serializable {
      */
     protected <T> ResponseInfo<T> getFailResult() {
         return ResponseInfo.<T>builder().code(ResponseCodeEnum.SERVER_ERROR.getCode())
-                .msg(ResponseCodeEnum.SERVER_ERROR.getMsg()).build();
+                .msg(ResponseCodeEnum.SERVER_ERROR.getMsg()).timestamp(DateUtil.current()).build();
     }
 }

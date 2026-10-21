@@ -35,16 +35,12 @@ public class FastJson2JsonRedisSerializer<T> implements RedisSerializer<T> {
         try {
             return JSON.toJSONBytes(t);
         } catch (Exception e) {
-            throw new SerializationException(
-                    "Could not serialize: " + e.getMessage(), e
-            );
+            throw new SerializationException("Could not serialize: " + e.getMessage(), e);
         }
     }
 
     @Override
-    public @Nullable T deserialize(byte @Nullable [] bytes)
-            throws SerializationException {
-
+    public @Nullable T deserialize(byte @Nullable [] bytes) throws SerializationException {
         if (bytes == null || bytes.length == 0) {
             return null;
         }
@@ -52,9 +48,7 @@ public class FastJson2JsonRedisSerializer<T> implements RedisSerializer<T> {
         try {
             return JSON.parseObject(bytes, clazz);
         } catch (Exception e) {
-            throw new SerializationException(
-                    "Could not deserialize: " + e.getMessage(), e
-            );
+            throw new SerializationException("Could not deserialize: " + e.getMessage(), e);
         }
     }
 }

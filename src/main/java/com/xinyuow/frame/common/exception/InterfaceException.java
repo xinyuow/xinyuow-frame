@@ -23,7 +23,7 @@ public class InterfaceException extends RuntimeException {
     private static final long serialVersionUID = -3104161012391467728L;
 
     // 错误编码
-    private final String errorCode;
+    private final Integer errorCode;
 
     // 错误信息
     private final String errorMsg;
@@ -34,7 +34,7 @@ public class InterfaceException extends RuntimeException {
      * @param errorCode 错误编码
      * @param errorMsg  错误信息
      */
-    public InterfaceException(String errorCode, String errorMsg) {
+    public InterfaceException(Integer errorCode, String errorMsg) {
         super("errorCode:" + errorCode + "  errorMsg:" + errorMsg);
         this.errorCode = errorCode;
         this.errorMsg = errorMsg;

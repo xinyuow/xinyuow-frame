@@ -7,25 +7,31 @@
  */
 package com.xinyuow.frame.common.exception;
 
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.exceptions.ExceptionUtil;
+import com.xinyuow.frame.common.model.ResponseInfo;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.ConversionNotSupportedException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageConversionException;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.HttpMessageNotWritableException;
 import org.springframework.security.authorization.AuthorizationDeniedException;
-import org.springframework.security.core.AuthenticationException;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.HttpMediaTypeNotAcceptableException;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 全局异常处理
@@ -37,18 +43,6 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionAdvisor {
 
-    // 响应码key
-    public static final String RESPONSE_CODE = "code";
-
-    // 响应信息key
-    public static final String RESPONSE_MSG = "msg";
-
-    // 响应传输信息key
-    public static final String RESPONSE_BODY = "body";
-
-    // 响应时间戳key
-    public static final String RESPONSE_TIMESTAMP = "timestamp";
-
     /**
      * 捕获全局异常，处理所有不可知的异常
      *
@@ -56,52 +50,60 @@ public class GlobalExceptionAdvisor {
      * @return 错误信息
      */
     @ExceptionHandler(Exception.class)
-    public Object handleException(Exception exception) {
-        log.error("\r\n ********* 操作出现异常", exception);
-
-        Map<String, Object> map = new HashMap<>(16);
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ResponseInfo<String> handleException(Exception exception) {
+        log.error("\r\n ********* 操作出现异常：{}", ExceptionUtils.getStackTrace(exception));
         Class<?> eClass = exception.getClass();
-
         if (eClass.equals(HttpRequestMethodNotSupportedException.class)) {
-            addResCodeToMap(ResponseCodeEnum.METHOD_NOT_SUPPORTED, map);
+            return this.addResCodeToMap(ResponseCodeEnum.METHOD_NOT_SUPPORTED.getCode(),
+                    ResponseCodeEnum.METHOD_NOT_SUPPORTED.getMsg());
         } else if (eClass.equals(HttpMediaTypeNotAcceptableException.class)) {
-            addResCodeToMap(ResponseCodeEnum.MEDIA_TYPE_NOT_ACCEPT, map);
+            return this.addResCodeToMap(ResponseCodeEnum.MEDIA_TYPE_NOT_ACCEPT.getCode(),
+                    ResponseCodeEnum.MEDIA_TYPE_NOT_ACCEPT.getMsg());
         } else if (eClass.equals(HttpMediaTypeNotSupportedException.class)) {
-            addResCodeToMap(ResponseCodeEnum.MEDIA_TYPE_NOT_SUPPORTED, map);
+            return this.addResCodeToMap(ResponseCodeEnum.MEDIA_TYPE_NOT_SUPPORTED.getCode(),
+                    ResponseCodeEnum.MEDIA_TYPE_NOT_SUPPORTED.getMsg());
         } else if (eClass.equals(NoHandlerFoundException.class)) {
-            addResCodeToMap(ResponseCodeEnum.RESOURCE_NOT_FOUND, map);
-        } else if (eClass.equals(ConversionNotSupportedException.class)
-                || eClass.equals(HttpMessageNotWritableException.class)) {
-            addResCodeToMap(ResponseCodeEnum.SERVER_ERROR, map);
+            return this.addResCodeToMap(ResponseCodeEnum.RESOURCE_NOT_FOUND.getCode(),
+                    ResponseCodeEnum.RESOURCE_NOT_FOUND.getMsg());
+        } else if (eClass.equals(MissingRequestHeaderException.class)) {
+            return this.addResCodeToMap(ResponseCodeEnum.REQUEST_PARAMS_ERROR.getCode(),
+                    ResponseCodeEnum.REQUEST_PARAMS_ERROR.getMsg());
+        } else if (eClass.equals(ConversionNotSupportedException.class)) {
+            return this.addResCodeToMap(ResponseCodeEnum.SERVER_ERROR.getCode(),
+                    ResponseCodeEnum.SERVER_ERROR.getMsg());
+        } else if (eClass.equals(HttpMessageNotWritableException.class)) {
+            return this.addResCodeToMap(ResponseCodeEnum.SERVER_ERROR.getCode(),
+                    ResponseCodeEnum.SERVER_ERROR.getMsg());
         } else {
-            addResCodeToMap(ResponseCodeEnum.SERVER_ERROR, map);
+            return this.addResCodeToMap(ResponseCodeEnum.SERVER_ERROR.getCode(),
+                    ResponseCodeEnum.SERVER_ERROR.getMsg());
         }
-        return map;
     }
 
     /**
-     * 处理请求参数校验异常
+     * 处理请求参数格式错误 @RequestBody上validate失败后抛出的异常是MethodArgumentNotValidException异常。
      *
      * @param exception 错误信息集合
      * @return 错误信息
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public Map<String, Object> validationBodyException(MethodArgumentNotValidException exception) {
-        Map<String, Object> map = new HashMap<>(16);
-
-        List<FieldError> fieldErrors = exception.getBindingResult().getFieldErrors();
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ResponseInfo<String> validationBodyException(MethodArgumentNotValidException exception) {
+        BindingResult result = exception.getBindingResult();
         String msg = null;
-
-        for (FieldError fieldError : fieldErrors) {
-            if (fieldError.getDefaultMessage() != null) {
-                log.error("\r\n ********* 参数校验失败。请求对象【{}】,请求参数【{}】,错误信息【{}】", fieldError.getObjectName(), fieldError.getField(), fieldError.getDefaultMessage());
-                msg = fieldError.getDefaultMessage();
+        if (result.hasErrors()) {
+            List<ObjectError> errors = result.getAllErrors();
+            for (ObjectError objectError : errors) {
+                FieldError fieldError = (FieldError) objectError;
+                if (fieldError.getDefaultMessage() != null) {
+                    log.error("\r\n ********* 参数校验失败。请求对象【{}】,请求参数【{}】,错误信息【{}】",
+                            fieldError.getObjectName(), fieldError.getField(), fieldError.getDefaultMessage());
+                    msg = fieldError.getDefaultMessage();
+                }
             }
         }
-
-        map.put(RESPONSE_CODE, ResponseCodeEnum.REQUEST_PARAMS_ERROR.getCode());
-        map.put(RESPONSE_MSG, msg);
-        return map;
+        return this.addResCodeToMap(ResponseCodeEnum.REQUEST_PARAMS_ERROR.getCode(), msg);
     }
 
     /**
@@ -111,12 +113,11 @@ public class GlobalExceptionAdvisor {
      * @return 错误信息
      */
     @ExceptionHandler(HttpMessageConversionException.class)
-    public Map<String, Object> httpMessageConversionException(HttpMessageConversionException exception) {
-        log.error("\r\n ********* 参数类型转换错误，异常信息如下：{}", exception.getCause().getLocalizedMessage());
-        Map<String, Object> map = new HashMap<>(16);
-        map.put(RESPONSE_CODE, ResponseCodeEnum.CALL_INTERFACE_API_FAILED.getCode());
-        map.put(RESPONSE_MSG, ResponseCodeEnum.CALL_INTERFACE_API_FAILED.getMsg());
-        return map;
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ResponseInfo<String> httpMessageConversionException(HttpMessageConversionException exception) {
+        log.error("\r\n ********* 参数类型转换错误，异常信息如下：{}", ExceptionUtil.getMessage(exception));
+        return this.addResCodeToMap(ResponseCodeEnum.CALL_INTERFACE_API_FAILED.getCode(),
+                ResponseCodeEnum.CALL_INTERFACE_API_FAILED.getMsg());
     }
 
     /**
@@ -126,12 +127,11 @@ public class GlobalExceptionAdvisor {
      * @return 错误信息
      */
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public Map<String, Object> httpMessageNotReadableException(HttpMessageNotReadableException exception) {
-        log.error("\r\n ********* 请求参数不可读异常，异常信息如下：{}", exception.getLocalizedMessage());
-        Map<String, Object> map = new HashMap<>(16);
-        map.put(RESPONSE_CODE, ResponseCodeEnum.REQUEST_PARAMS_ERROR.getCode());
-        map.put(RESPONSE_MSG, ResponseCodeEnum.REQUEST_PARAMS_ERROR.getMsg());
-        return map;
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ResponseInfo<String> httpMessageNotReadableException(HttpMessageNotReadableException exception) {
+        log.error("\r\n ********* 请求参数不可读异常，异常信息如下：{}", ExceptionUtil.getMessage(exception));
+        return this.addResCodeToMap(ResponseCodeEnum.REQUEST_PARAMS_ERROR.getCode(),
+                ResponseCodeEnum.REQUEST_PARAMS_ERROR.getMsg());
     }
 
     /**
@@ -141,26 +141,10 @@ public class GlobalExceptionAdvisor {
      * @return 返回的异常信息
      */
     @ExceptionHandler(InterfaceException.class)
-    public Map<String, Object> handleInterfaceException(InterfaceException exception) {
-        Map<String, Object> map = new HashMap<>(16);
-
-        map.put(RESPONSE_CODE, exception.getErrorCode());
-        map.put(RESPONSE_MSG, exception.getErrorMsg());
-        return map;
-    }
-
-    /**
-     * 捕获Spring Security Token认证失败异常
-     *
-     * @param exception Token认证失败异常
-     * @return 返回的异常信息map
-     */
-    @ExceptionHandler(AuthenticationException.class)
-    public Object handleAuthenticationException(AuthenticationException exception) {
-        log.error("\r\n ********* Token认证失败异常，异常信息：{}", exception.getMessage());
-        Map<String, Object> map = new HashMap<>(16);
-        addResCodeToMap(ResponseCodeEnum.NOT_LOGIN_ERROR, map);
-        return map;
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ResponseInfo<String> handleInterfaceException(InterfaceException exception) {
+        log.error("\r\n ********* 捕获业务异常，异常信息如下：{}", ExceptionUtil.getMessage(exception));
+        return this.addResCodeToMap(exception.getErrorCode(), exception.getErrorMsg());
     }
 
     /**
@@ -170,21 +154,21 @@ public class GlobalExceptionAdvisor {
      * @return 返回的异常信息map
      */
     @ExceptionHandler(AuthorizationDeniedException.class)
-    public Object handleAuthorizationDeniedException(AuthorizationDeniedException exception) {
-        log.error("\r\n ********* 无权限异常，异常信息：{}", exception.getMessage());
-        Map<String, Object> map = new HashMap<>(16);
-        addResCodeToMap(ResponseCodeEnum.UNAUTHORIZED, map);
-        return map;
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ResponseInfo<String> handleAuthorizationDeniedException(AuthorizationDeniedException exception) {
+        log.error("\r\n ********* 无权限异常，异常信息：{}", ExceptionUtil.getMessage(exception));
+        return this.addResCodeToMap(ResponseCodeEnum.UNAUTHORIZED.getCode(),
+                ResponseCodeEnum.UNAUTHORIZED.getMsg());
     }
 
     /**
-     * 添加异常信息到map中
+     * 添加异常信息到返回对象
      *
-     * @param responseCodeEnum 错误响应编码枚举类对象
-     * @param map              响应对象
+     * @param code 响应状态码
+     * @param msg  响应信息
+     * @return 响应对象
      */
-    private void addResCodeToMap(ResponseCodeEnum responseCodeEnum, Map<String, Object> map) {
-        map.put(RESPONSE_CODE, responseCodeEnum.getCode());
-        map.put(RESPONSE_MSG, responseCodeEnum.getMsg());
+    protected ResponseInfo<String> addResCodeToMap(Integer code, String msg) {
+        return ResponseInfo.<String>builder().code(code).msg(msg).timestamp(DateUtil.current()).body("").build();
     }
 }

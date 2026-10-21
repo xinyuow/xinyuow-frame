@@ -13,7 +13,7 @@ import com.xinyuow.frame.common.enums.ClientEnum;
 import com.xinyuow.frame.common.exception.InterfaceException;
 import com.xinyuow.frame.common.exception.ResponseCodeEnum;
 import com.xinyuow.frame.common.properties.JwtProperties;
-import com.xinyuow.frame.common.properties.WebJwtProperties;
+import com.xinyuow.frame.common.properties.JwtWebProperties;
 import com.xinyuow.frame.common.security.WebJwtSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -43,7 +43,7 @@ public class WebJwtComponent {
 
     private final JwtEncoder jwtEncoder;
     private final JwtProperties jwtProperties;
-    private final WebJwtProperties webJwtProperties;
+    private final JwtWebProperties jwtWebProperties;
     private final RedisComponent redisComponent;
 
     /**
@@ -218,7 +218,7 @@ public class WebJwtComponent {
                     // 更新用户会话的接口权限
                     session.setPermissionList(permissions);
                     redisComponent.set(this.buildSessionKey(session.getUserId(), jti),
-                            JSON.toJSONString(session), webJwtProperties.getExpiration());
+                            JSON.toJSONString(session), jwtWebProperties.getExpiration());
                 }
             }
         }
@@ -234,7 +234,7 @@ public class WebJwtComponent {
     private void save(WebJwtSession session) {
         // 保存本次登录的JWT会话到Redis中
         redisComponent.set(this.buildSessionKey(session.getUserId(), session.getJti()),
-                JSON.toJSONString(session), webJwtProperties.getExpiration());
+                JSON.toJSONString(session), jwtWebProperties.getExpiration());
 
         // 将登录后的JWT会话添加到用户会话索引中。每一个用户可以多端登录，所以需要添加到索引中，方便后续删除
         redisComponent.setAdd(this.buildIndexKey(session.getUserId()), session.getJti());
@@ -249,7 +249,7 @@ public class WebJwtComponent {
      * @return Redis Key
      */
     private String buildSessionKey(Long userId, String jti) {
-        return String.format(webJwtProperties.getSessionKey(), userId, jti);
+        return String.format(jwtWebProperties.getSessionKey(), userId, jti);
     }
 
     /**
@@ -260,6 +260,6 @@ public class WebJwtComponent {
      * @return Redis Key
      */
     private String buildIndexKey(Long userId) {
-        return String.format(webJwtProperties.getIndexKey(), userId);
+        return String.format(jwtWebProperties.getIndexKey(), userId);
     }
 }

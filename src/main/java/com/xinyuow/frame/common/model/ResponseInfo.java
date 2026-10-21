@@ -34,10 +34,13 @@ public class ResponseInfo<T> implements Serializable {
     private static final long serialVersionUID = -3012997048071229435L;
 
     @Schema(description = "响应状态码")
-    private String code;
+    private Integer code;
 
     @Schema(description = "响应信息")
     private String msg;
+
+    @Schema(description = "响应时间戳")
+    private Long timestamp;
 
     @Schema(description = "响应传输信息")
     private T body;

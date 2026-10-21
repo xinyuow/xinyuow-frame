@@ -1,9 +1,9 @@
 /*
- * AppJwtProperties.java
+ * JwtWebProperties.java
  * Copyright © 2026 xinyuow
  * All rights reserved.
  * --------------------------------------------------------
- * Created by xinyuow on 2026-10-17
+ * Created by xinyuow on 2026-10-19
  */
 package com.xinyuow.frame.common.properties;
 
@@ -14,38 +14,28 @@ import org.springframework.stereotype.Component;
 import java.time.Duration;
 
 /**
- * APP中JWT的Redis配置
+ * WEB中JWT的Redis配置
  *
  * @author xinyuow
- * @date 2026-10-17
+ * @date 2026-10-19
  */
 @Data
 @Component
-@ConfigurationProperties(prefix = "xinyuow.redis.app.jwt")
-public class AppJwtProperties {
+@ConfigurationProperties(prefix = "xinyuow.jwt.redis.web")
+public class JwtWebProperties {
 
     /**
-     * JWT会话键
-     * 第一个参数：phone
+     * JWT会话键(key-value类型)
+     * 第一个参数：用户ID
      * 第二个参数：jti
      */
     private String sessionKey;
 
     /**
-     * JWT所有会话键
-     */
-    private String sessionAllKey;
-
-    /**
-     * JWT索引键
-     * 参数：phone
+     * JWT会话索引键(set类型)
+     * 参数：用户ID
      */
     private String indexKey;
-
-    /**
-     * JWT所有索引键
-     */
-    private String indexAllKey;
 
     /**
      * JWT过期时间

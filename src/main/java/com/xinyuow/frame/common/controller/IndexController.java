@@ -7,8 +7,6 @@
  */
 package com.xinyuow.frame.common.controller;
 
-import cn.hutool.core.date.DateUtil;
-import com.xinyuow.frame.common.exception.GlobalExceptionAdvisor;
 import com.xinyuow.frame.common.exception.ResponseCodeEnum;
 import com.xinyuow.frame.common.model.ResponseInfo;
 import io.swagger.v3.oas.annotations.Hidden;
@@ -20,8 +18,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.Serial;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * 默认路径控制器
@@ -52,12 +48,8 @@ public class IndexController extends BaseController implements ErrorController {
      * @return 操作结果
      */
     @RequestMapping("/api/health")
-    public Map<String, Object> checkHealth() {
-        Map<String, Object> resultMap = new HashMap<>(3);
-        resultMap.put(GlobalExceptionAdvisor.RESPONSE_CODE, Integer.valueOf(ResponseCodeEnum.REQUEST_SUCCESS.getCode()));
-        resultMap.put(GlobalExceptionAdvisor.RESPONSE_MSG, ResponseCodeEnum.REQUEST_SUCCESS.getMsg());
-        resultMap.put(GlobalExceptionAdvisor.RESPONSE_TIMESTAMP, DateUtil.current());
-        return resultMap;
+    public ResponseInfo<Object> checkHealth() {
+        return getSuccessResult();
     }
 
     /**
@@ -67,11 +59,11 @@ public class IndexController extends BaseController implements ErrorController {
      * @return 响应信息
      */
     @RequestMapping("/error")
-    public ResponseInfo<Void> error(HttpServletRequest request) {
+    public ResponseInfo<Object> error(HttpServletRequest request) {
         Object statusCode = request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);
         if (null == statusCode) {
             return getFailResult(ResponseCodeEnum.SERVER_ERROR);
         }
-        return getFailResult(ResponseCodeEnum.getHttpResponseCode(statusCode.toString()));
+        return getFailResult(ResponseCodeEnum.getHttpResponseCode(Integer.valueOf(statusCode.toString())));
     }
 }

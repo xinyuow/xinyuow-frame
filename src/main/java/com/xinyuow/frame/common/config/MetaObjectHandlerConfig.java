@@ -8,6 +8,7 @@
 package com.xinyuow.frame.common.config;
 
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
+import com.xinyuow.frame.common.constant.MybatisPlusConstant;
 import org.apache.ibatis.reflection.MetaObject;
 import org.springframework.stereotype.Component;
 
@@ -28,8 +29,8 @@ public class MetaObjectHandlerConfig implements MetaObjectHandler {
     @Override
     public void insertFill(MetaObject metaObject) {
         LocalDateTime now = LocalDateTime.now();
-        this.setFieldValByName("createDate", now, metaObject);
-        this.setFieldValByName("modifyDate", now, metaObject);
+        this.setFieldValByName(MybatisPlusConstant.CREATE_DATE, now, metaObject);
+        this.setFieldValByName(MybatisPlusConstant.MODIFY_DATE, now, metaObject);
     }
 
     /**
@@ -37,6 +38,6 @@ public class MetaObjectHandlerConfig implements MetaObjectHandler {
      */
     @Override
     public void updateFill(MetaObject metaObject) {
-        this.setFieldValByName("modifyDate", LocalDateTime.now(), metaObject);
+        this.setFieldValByName(MybatisPlusConstant.MODIFY_DATE, LocalDateTime.now(), metaObject);
     }
 }

@@ -9,6 +9,7 @@ package com.xinyuow.frame.common.constant;
 
 /**
  * JWT常量类
+ * 主要定义：JWT声明中的字段，用于存储客户端类型、用户ID、手机号等信息
  *
  * @author xinyuow
  * @date 2026-10-19

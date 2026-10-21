@@ -62,9 +62,8 @@ xinyuow:
     issuer: xinyuow-frame
     # JWT有效时间
     expiration: 7200s
-  redis:
-    app:
-      jwt:
+    redis:
+      app:
         # JWT会话键 - 手机号码+JTI
         session-key: "xinyuow-frame:app:jwt:%s:%s"
         # JWT所有会话键
@@ -75,8 +74,7 @@ xinyuow:
         index-all-key: "xinyuow-frame:app:index:*"
         # JWT过期时间, 默认2小时
         expiration: 2h
-    web:
-      jwt:
+      web:
         # JWT会话键 - 用户ID+JTI
         session-key: "xinyuow-frame:web:jwt:%s:%s"
         # JWT会话索引键(set类型) - 用户ID

@@ -3,13 +3,11 @@
  * Copyright © 2026 xinyuow
  * All rights reserved.
  * --------------------------------------------------------
- * Created by xinyuow on 2026-10-17
+ * Created by xinyuow on 2026-10-21
  */
-package com.xinyuow.frame.common.config;
+package com.xinyuow.frame.common.security;
 
 import com.xinyuow.frame.common.properties.SwaggerProperties;
-import com.xinyuow.frame.common.security.AppJwtAuthenticationConverter;
-import com.xinyuow.frame.common.security.WebJwtAuthenticationConverter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -34,6 +32,7 @@ public class SecurityConfig {
 
     private final AppJwtAuthenticationConverter appJwtAuthenticationConverter;
     private final WebJwtAuthenticationConverter webJwtAuthenticationConverter;
+    private final JsonAuthenticationEntryPoint authenticationEntryPoint;
     private final SwaggerProperties properties;
 
     /**
@@ -60,8 +59,13 @@ public class SecurityConfig {
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
+                // 认证失败时，返回JSON格式的错误信息
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint(authenticationEntryPoint)
+                )
                 // 收到Authorization: Bearer xxx后，用JWT方式认证，并且交给自定义的WebJwtAuthenticationConverter进行后续转换
                 .oauth2ResourceServer(oauth2 -> oauth2
+                        .authenticationEntryPoint(authenticationEntryPoint)
                         .jwt(jwt -> jwt.jwtAuthenticationConverter(webJwtAuthenticationConverter))
                 );
         return http.build();
@@ -85,8 +89,13 @@ public class SecurityConfig {
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
+                // 认证失败时，返回JSON格式的错误信息
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint(authenticationEntryPoint)
+                )
                 // 收到Authorization: Bearer xxx后，用JWT方式认证，并且交给自定义的AppJwtAuthenticationConverter进行后续转换
                 .oauth2ResourceServer(oauth2 -> oauth2
+                        .authenticationEntryPoint(authenticationEntryPoint)
                         .jwt(jwt -> jwt.jwtAuthenticationConverter(appJwtAuthenticationConverter))
                 );
         return http.build();

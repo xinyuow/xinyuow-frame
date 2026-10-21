@@ -49,6 +49,6 @@ public class UserResVO implements Serializable {
     @Schema(description = "是否锁定;1:是 0:否")
     private Boolean lockFlag;
 
-    @Schema(description = "创建时间")
+    @Schema(description = "创建时间", example = "2026-10-21 10:00:00")
     private LocalDateTime createDate;
 }

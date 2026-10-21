@@ -45,5 +45,4 @@ public abstract class WebBaseController extends BaseController {
     protected Long getCurrentUserId() {
         return this.getCurrentJwtSession().getUserId();
     }
-
 }

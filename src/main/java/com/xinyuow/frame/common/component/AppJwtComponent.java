@@ -12,7 +12,7 @@ import com.xinyuow.frame.common.constant.JwtConstant;
 import com.xinyuow.frame.common.enums.ClientEnum;
 import com.xinyuow.frame.common.exception.InterfaceException;
 import com.xinyuow.frame.common.exception.ResponseCodeEnum;
-import com.xinyuow.frame.common.properties.AppJwtProperties;
+import com.xinyuow.frame.common.properties.JwtAppProperties;
 import com.xinyuow.frame.common.properties.JwtProperties;
 import com.xinyuow.frame.common.security.AppJwtSession;
 import lombok.RequiredArgsConstructor;
@@ -42,7 +42,7 @@ public class AppJwtComponent {
 
     private final JwtEncoder jwtEncoder;
     private final JwtProperties jwtProperties;
-    private final AppJwtProperties appJwtProperties;
+    private final JwtAppProperties jwtAppProperties;
     private final RedisComponent redisComponent;
 
     /**
@@ -297,8 +297,8 @@ public class AppJwtComponent {
      * 删除全部APP用户的JWT会话
      */
     public void removeAll() {
-        this.deleteByPattern(appJwtProperties.getSessionAllKey());
-        this.deleteByPattern(appJwtProperties.getIndexAllKey());
+        this.deleteByPattern(jwtAppProperties.getSessionAllKey());
+        this.deleteByPattern(jwtAppProperties.getIndexAllKey());
     }
 
     /**
@@ -308,7 +308,7 @@ public class AppJwtComponent {
      */
     private void save(AppJwtSession session) {
         redisComponent.set(this.buildSessionKey(session.getPhone(), session.getJti()),
-                JSON.toJSONString(session), appJwtProperties.getExpiration());
+                JSON.toJSONString(session), jwtAppProperties.getExpiration());
         if (0 == redisComponent.setAdd(this.buildIndexKey(session.getPhone()), session.getJti())) {
             log.error("\r\n ********* 保存JWT会话到Redis失败，会话信息：{}", JSON.toJSONString(session));
         }
@@ -337,7 +337,7 @@ public class AppJwtComponent {
      * @return Redis Key
      */
     private String buildSessionKey(String phone, String jti) {
-        return String.format(appJwtProperties.getSessionKey(), phone, jti);
+        return String.format(jwtAppProperties.getSessionKey(), phone, jti);
     }
 
     /**
@@ -347,6 +347,6 @@ public class AppJwtComponent {
      * @return Redis Key
      */
     private String buildIndexKey(String phone) {
-        return String.format(appJwtProperties.getIndexKey(), phone);
+        return String.format(jwtAppProperties.getIndexKey(), phone);
     }
 }
