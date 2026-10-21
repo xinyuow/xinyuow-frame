@@ -1,5 +1,5 @@
 /*
- * WebJwtAuthenticationConverter.java
+ * JwtWebAuthenticationConverter.java
  * Copyright © 2026 xinyuow
  * All rights reserved.
  * --------------------------------------------------------
@@ -7,7 +7,7 @@
  */
 package com.xinyuow.frame.common.security;
 
-import com.xinyuow.frame.common.component.WebJwtComponent;
+import com.xinyuow.frame.common.component.JwtWebComponent;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
 import org.springframework.core.convert.converter.Converter;
@@ -28,13 +28,13 @@ import java.util.List;
  */
 @Component
 @RequiredArgsConstructor
-public class WebJwtAuthenticationConverter implements Converter<Jwt, JwtAuthenticationToken> {
-    private final WebJwtComponent webJwtComponent;
+public class JwtWebAuthenticationConverter implements Converter<Jwt, JwtAuthenticationToken> {
+    private final JwtWebComponent jwtWebComponent;
 
     @Override
     public JwtAuthenticationToken convert(@NonNull Jwt jwt) {
         // 从JWT中获取Web的JWT会话
-        WebJwtSession session = webJwtComponent.get(jwt);
+        WebJwtSession session = jwtWebComponent.get(jwt);
 
         // 将权限字符串转换为Spring Security权限对象
         List<GrantedAuthority> authorities = session.getPermissionList().stream()

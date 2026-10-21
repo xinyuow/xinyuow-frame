@@ -30,8 +30,8 @@ import org.springframework.security.web.SecurityFilterChain;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final AppJwtAuthenticationConverter appJwtAuthenticationConverter;
-    private final WebJwtAuthenticationConverter webJwtAuthenticationConverter;
+    private final JwtAppAuthenticationConverter jwtAppAuthenticationConverter;
+    private final JwtWebAuthenticationConverter jwtWebAuthenticationConverter;
     private final JsonAuthenticationEntryPoint authenticationEntryPoint;
     private final SwaggerProperties properties;
 
@@ -66,7 +66,7 @@ public class SecurityConfig {
                 // 收到Authorization: Bearer xxx后，用JWT方式认证，并且交给自定义的WebJwtAuthenticationConverter进行后续转换
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .authenticationEntryPoint(authenticationEntryPoint)
-                        .jwt(jwt -> jwt.jwtAuthenticationConverter(webJwtAuthenticationConverter))
+                        .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtWebAuthenticationConverter))
                 );
         return http.build();
     }
@@ -96,7 +96,7 @@ public class SecurityConfig {
                 // 收到Authorization: Bearer xxx后，用JWT方式认证，并且交给自定义的AppJwtAuthenticationConverter进行后续转换
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .authenticationEntryPoint(authenticationEntryPoint)
-                        .jwt(jwt -> jwt.jwtAuthenticationConverter(appJwtAuthenticationConverter))
+                        .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAppAuthenticationConverter))
                 );
         return http.build();
     }

@@ -39,7 +39,7 @@ import java.util.UUID;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class WebJwtComponent {
+public class JwtWebComponent {
 
     private final JwtEncoder jwtEncoder;
     private final JwtProperties jwtProperties;

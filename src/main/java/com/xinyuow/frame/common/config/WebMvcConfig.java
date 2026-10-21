@@ -1,5 +1,5 @@
 /*
- * WebMvcConfiguration.java
+ * WebMvcConfig.java
  * Copyright © 2026 xinyuow
  * All rights reserved.
  * --------------------------------------------------------
@@ -38,7 +38,7 @@ import java.util.List;
  * @date 2026-10-17
  */
 @Configuration
-public class WebMvcConfiguration implements WebMvcConfigurer {
+public class WebMvcConfig implements WebMvcConfigurer {
 
     /**
      * 跨域设置 - 过滤器方式先于拦截器生效

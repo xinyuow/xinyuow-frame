@@ -1,5 +1,5 @@
 /*
- * AppJwtAuthenticationConverter.java
+ * JwtAppAuthenticationConverter.java
  * Copyright © 2026 xinyuow
  * All rights reserved.
  * --------------------------------------------------------
@@ -7,7 +7,7 @@
  */
 package com.xinyuow.frame.common.security;
 
-import com.xinyuow.frame.common.component.AppJwtComponent;
+import com.xinyuow.frame.common.component.JwtAppComponent;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
 import org.springframework.core.convert.converter.Converter;
@@ -26,12 +26,12 @@ import java.util.Collections;
  */
 @Component
 @RequiredArgsConstructor
-public class AppJwtAuthenticationConverter implements Converter<Jwt, JwtAuthenticationToken> {
-    private final AppJwtComponent appJwtComponent;
+public class JwtAppAuthenticationConverter implements Converter<Jwt, JwtAuthenticationToken> {
+    private final JwtAppComponent jwtAppComponent;
 
     @Override
     public JwtAuthenticationToken convert(@NonNull Jwt jwt) {
         return new JwtAuthenticationToken(jwt, Collections.emptyList(),
-                String.valueOf(appJwtComponent.get(jwt).getUserId()));
+                String.valueOf(jwtAppComponent.get(jwt).getUserId()));
     }
 }

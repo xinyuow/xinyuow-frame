@@ -7,7 +7,7 @@
  */
 package com.xinyuow.frame.common.controller;
 
-import com.xinyuow.frame.common.component.WebJwtComponent;
+import com.xinyuow.frame.common.component.JwtWebComponent;
 import com.xinyuow.frame.common.security.WebJwtSession;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +26,7 @@ public abstract class WebBaseController extends BaseController {
     private static final long serialVersionUID = 624841049563451448L;
 
     @Resource
-    private WebJwtComponent webJwtComponent;
+    private JwtWebComponent jwtWebComponent;
 
     /**
      * 获取当前登录的JWT会话
@@ -34,7 +34,7 @@ public abstract class WebBaseController extends BaseController {
      * @return 当前JWT会话
      */
     protected WebJwtSession getCurrentJwtSession() {
-        return webJwtComponent.getCurrentSession();
+        return jwtWebComponent.getCurrentSession();
     }
 
     /**

@@ -30,6 +30,7 @@ import java.nio.charset.StandardCharsets;
 @Configuration
 @RequiredArgsConstructor
 public class JwtConfig {
+
     private final JwtProperties jwtProperties;
 
     /**

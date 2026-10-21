@@ -38,7 +38,7 @@ import java.util.UUID;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class AppJwtComponent {
+public class JwtAppComponent {
 
     private final JwtEncoder jwtEncoder;
     private final JwtProperties jwtProperties;

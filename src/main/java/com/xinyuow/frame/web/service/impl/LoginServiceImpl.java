@@ -10,8 +10,8 @@ package com.xinyuow.frame.web.service.impl;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.spring.service.impl.ServiceImpl;
+import com.xinyuow.frame.common.component.JwtWebComponent;
 import com.xinyuow.frame.common.component.WebCaptchaComponent;
-import com.xinyuow.frame.common.component.WebJwtComponent;
 import com.xinyuow.frame.common.constant.JwtConstant;
 import com.xinyuow.frame.common.enums.DelFlagEnum;
 import com.xinyuow.frame.common.enums.MenuTypeEnum;
@@ -53,7 +53,7 @@ public class LoginServiceImpl extends ServiceImpl<UserMapper, User> implements L
     private final MenuMapper menuMapper;
     private final WebUserProperties webUserProperties;
     private final WebCaptchaComponent webCaptchaComponent;
-    private final WebJwtComponent webJwtComponent;
+    private final JwtWebComponent jwtWebComponent;
     private final PasswordEncoder passwordEncoder;
 
     /**
@@ -106,7 +106,7 @@ public class LoginServiceImpl extends ServiceImpl<UserMapper, User> implements L
         }
 
         // 签发JWT并保存用户会话
-        WebJwtSession session = webJwtComponent.create(user.getId(), permissionList);
+        WebJwtSession session = jwtWebComponent.create(user.getId(), permissionList);
 
         // 返回登录结果结果
         long expiresIn = Math.max((session.getExpiresAt() - System.currentTimeMillis()) / 1000, 0);
@@ -128,7 +128,7 @@ public class LoginServiceImpl extends ServiceImpl<UserMapper, User> implements L
      */
     @Override
     public void logout(Long userId, String jti) {
-        webJwtComponent.remove(userId, jti);
+        jwtWebComponent.remove(userId, jti);
     }
 
     /**

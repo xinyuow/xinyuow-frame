@@ -7,7 +7,7 @@
  */
 package com.xinyuow.frame.common.controller;
 
-import com.xinyuow.frame.common.component.AppJwtComponent;
+import com.xinyuow.frame.common.component.JwtAppComponent;
 import com.xinyuow.frame.common.security.AppJwtSession;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +26,7 @@ public abstract class AppBaseController extends BaseController {
     private static final long serialVersionUID = -5244617590297088599L;
 
     @Resource
-    private AppJwtComponent appJwtComponent;
+    private JwtAppComponent jwtAppComponent;
 
     /**
      * 获取当前登录的JWT会话
@@ -34,7 +34,7 @@ public abstract class AppBaseController extends BaseController {
      * @return 当前JWT会话
      */
     protected AppJwtSession getCurrentJwtSession() {
-        return appJwtComponent.getCurrentSession();
+        return jwtAppComponent.getCurrentSession();
     }
 
     /**
