@@ -33,11 +33,11 @@ public class WebLoginReqVO implements Serializable {
     private static final long serialVersionUID = 7654011769779728014L;
 
     @NotBlank(message = "登录账号不能为空")
-    @Schema(description = "登录账号")
+    @Schema(description = "登录账号", example = "admin")
     private String loginName;
 
     @NotBlank(message = "登录密码不能为空")
-    @Schema(description = "登录密码")
+    @Schema(description = "登录密码", example = "123456")
     private String password;
 
     @NotBlank

@@ -33,6 +33,6 @@ public class UserInfoQueryReqVO implements Serializable {
     private static final long serialVersionUID = 4905206649087048566L;
 
     @NotNull(message = "用户ID不能为空")
-    @Schema(description = "用户ID")
+    @Schema(description = "用户ID", example = "1")
     private Long userId;
 }

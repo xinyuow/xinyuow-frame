@@ -76,6 +76,4 @@ public class WebLoginController extends WebBaseController {
         loginService.logout(session.getUserId(), session.getJti());
         return getSuccessResult();
     }
-
-    // TODO：登录错误返回
 }
